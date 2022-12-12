@@ -34,8 +34,6 @@ public class Grid {
 
             visited.add(new Knot(tail.x, tail.y));
             visitedTail9.add(new Knot(tail9.x, tail9.y));
-            // System.out.println("head " + head.x + " " + head.y);
-            // System.out.println("tail " + tail.x + " " + tail.y);
         }
 
     }

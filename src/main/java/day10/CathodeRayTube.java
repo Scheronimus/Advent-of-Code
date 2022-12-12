@@ -50,33 +50,25 @@ public class CathodeRayTube extends Puzzle {
 
     @Override
     public Object getAnswer1() {
-
-        System.out.println(cpu.historyOfX.toString());
         int result = 0;
-
         result += calculateSignalStrength(20);
         result += calculateSignalStrength(60);
         result += calculateSignalStrength(100);
         result += calculateSignalStrength(140);
         result += calculateSignalStrength(180);
         result += calculateSignalStrength(220);
-
-
         return result;
     }
 
     private int calculateSignalStrength(final int cycle) {
-        int signalStrengths = cpu.historyOfX.get(cycle - 1) * cycle;
-        return signalStrengths;
+        return cpu.historyOfX.get(cycle - 1) * cycle;
     }
 
 
-    private String PrintCRT() {
+    private String printCRT() {
         StringBuilder result = new StringBuilder();
         for (int j = 0; j < 6; j++) {
-
             for (int i = 0; i < 40; i++) {
-
                 Integer x = cpu.historyOfX.get(i + 40 * j);
                 if (i + 1 >= x && i + 1 < x + 3) {
                     result.append("#");
@@ -91,7 +83,7 @@ public class CathodeRayTube extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        return PrintCRT();
+        return printCRT();
     }
 
     public static void main(final String[] args) throws IOException {

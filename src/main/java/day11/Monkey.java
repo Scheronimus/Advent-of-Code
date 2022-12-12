@@ -6,6 +6,7 @@ import java.util.List;
 import day11.operation.IOperation;
 
 public class Monkey {
+    static long moduloOptimizer = 1;
     private int id;
     private List<Item> items;
     private IOperation operation;
@@ -25,6 +26,12 @@ public class Monkey {
 
     protected void setTest(final Test test) {
         this.test = test;
+        Monkey.addDiviserToOptimizer(test.divisibleBy);
+
+    }
+
+    public synchronized static void addDiviserToOptimizer(int div) {
+        moduloOptimizer *= div;
     }
 
 
@@ -44,9 +51,7 @@ public class Monkey {
         if (reduceWorryLevel) {
             item.setWorryLevel(item.getWorryLevel().divide(BigInteger.valueOf(3)));
         } else {
-            long prim = 2 * 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23L;
-            item.setWorryLevel(item.getWorryLevel().remainder(BigInteger.valueOf(prim)));
-
+            item.setWorryLevel(item.getWorryLevel().remainder(BigInteger.valueOf(moduloOptimizer)));
         }
         int monkeyToThrowId;
         if (test.run(item)) {

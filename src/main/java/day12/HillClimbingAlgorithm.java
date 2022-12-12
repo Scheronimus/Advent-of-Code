@@ -92,50 +92,50 @@ public class HillClimbingAlgorithm extends Puzzle {
         return char1 + 1 >= char2;
     }
 
-    private void visualizePath(final LinkedList<Vertex> path) {
+    private String visualizePath(final LinkedList<Vertex> path) {
+        StringBuilder result = new StringBuilder();
         for (int j = 0; j < heightMap.getmaxY(); j++) {
             for (int i = 0; i < heightMap.getmaxX(); i++) {
                 if (path.contains(new Vertex("Node_" + toNodeId(i, j), "Node_" + toNodeId(i, j)))) {
 
                     int id = path.indexOf(new Vertex("Node_" + toNodeId(i, j), "Node_" + toNodeId(i, j)));
                     if (id == path.size() - 1) {
-                        System.out.print("E");
+                        result.append("E");
                     } else {
                         int next = Integer.parseInt(path.get(id + 1).getId().substring(5));
                         if (next - toNodeId(i, j) == 1) {
-                            System.out.print(">");
+                            result.append(">");
                         } else if (next - toNodeId(i, j) == -1) {
-                            System.out.print("<");
+                            result.append("<");
                         } else if (next - toNodeId(i, j) < 0) {
-                            System.out.print("^");
+                            result.append("^");
                         } else if (next - toNodeId(i, j) > 0) {
-                            System.out.print("v");
+                            result.append("v");
                         }
                     }
                 } else {
-                    System.out.print(".");
+                    result.append(".");
                 }
-
             }
-            System.out.print("\n");
+            result.append("\n");
         }
+
+        return result.toString();
     }
 
     @Override
     public Object getAnswer1() {
-
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
-
         dijkstra.execute(graph.getVertexes().get(toNodeId(heightMap.Sx, heightMap.Sy)));
         LinkedList<Vertex> path = dijkstra.getPath(graph.getVertexes().get(toNodeId(heightMap.Ex, heightMap.Ey)));
-        // visualizePath(path);
-
+        // System.out.println(visualizePath(path));
         return path.size() - 1;
     }
 
     @Override
     public Object getAnswer2() {
         int min = Integer.MAX_VALUE;
+        LinkedList<Vertex> bestPath = null;
 
         for (int j = 0; j < heightMap.getmaxY(); j++) {
             for (int i = 0; i < heightMap.getmaxX(); i++) {
@@ -146,10 +146,12 @@ public class HillClimbingAlgorithm extends Puzzle {
                             dijkstra.getPath(graph.getVertexes().get(toNodeId(heightMap.Ex, heightMap.Ey)));
                     if (path != null && path.size() - 1 < min) {
                         min = path.size() - 1;
+                        bestPath = path;
                     }
                 }
             }
         }
+        // System.out.println(visualizePath(bestPath));
         return min;
     }
 
