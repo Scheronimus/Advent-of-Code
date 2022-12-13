@@ -40,36 +40,36 @@ public class DistressSignal extends Puzzle {
     @SuppressWarnings("unchecked")
     private int compare(final List<Object> list1, final List<Object> list2) {
         int i = 0;
-        for (Object object : list1) {
-            Object toCompare;
+        for (Object object1 : list1) {
+            Object object2;
             try {
-                toCompare = list2.get(i++);
+                object2 = list2.get(i++);
             } catch (IndexOutOfBoundsException e) {
                 return -1;
             }
-            if (object instanceof Integer integer1 && toCompare instanceof Integer integer2) {
+            if (object1 instanceof Integer integer1 && object2 instanceof Integer integer2) {
                 int res = compare(integer1, integer2);
                 if (res != 0) {
                     return res;
                 }
-            } else if (object instanceof Integer integer1) {
+            } else if (object1 instanceof Integer integer1) {
                 List<Object> tempList = new ArrayList<>();
                 tempList.add(integer1);
-                int res = compare(tempList, (ArrayList<Object>)toCompare);
+                int res = compare(tempList, (ArrayList<Object>)object2);
                 if (res != 0) {
                     return res;
                 }
 
-            } else if (toCompare instanceof Integer integer2) {
+            } else if (object2 instanceof Integer integer2) {
                 List<Object> tempList = new ArrayList<>();
                 tempList.add(integer2);
-                int res = compare((ArrayList<Object>)object, tempList);
+                int res = compare((ArrayList<Object>)object1, tempList);
                 if (res != 0) {
                     return res;
                 }
 
             } else {
-                int res = compare((ArrayList<Object>)object, (ArrayList<Object>)toCompare);
+                int res = compare((ArrayList<Object>)object1, (ArrayList<Object>)object2);
                 if (res != 0) {
                     return res;
                 }
@@ -84,7 +84,7 @@ public class DistressSignal extends Puzzle {
     }
 
     private int compare(final Integer obj1, final Integer obj2) {
-        if (obj1 == obj2) {
+        if (obj1.equals(obj2)) {
             return 0;
         } else if (obj1 > obj2) {
             return -1;

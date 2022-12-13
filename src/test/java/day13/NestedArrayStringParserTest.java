@@ -27,7 +27,7 @@ public class NestedArrayStringParserTest {
         // More that 2 digits is not supported
         NestedArrayStringParser parser2 = new NestedArrayStringParser();
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             parser2.buildList("[100]");
         });
     }
