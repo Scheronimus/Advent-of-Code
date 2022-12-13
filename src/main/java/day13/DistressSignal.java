@@ -37,6 +37,7 @@ public class DistressSignal extends Puzzle {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private int compare(final List<Object> list1, final List<Object> list2) {
         int i = 0;
         for (Object object : list1) {

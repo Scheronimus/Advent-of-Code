@@ -1,5 +1,7 @@
 package day13;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +24,11 @@ public class NestedArrayStringParserTest {
         res = parser.buildList("[[],[10,3,10,9]]");
         Assertions.assertEquals("[[], [10, 3, 10, 9]]", res.toString());
 
+        // More that 2 digits is not supported
+        NestedArrayStringParser parser2 = new NestedArrayStringParser();
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            parser2.buildList("[100]");
+        });
     }
-
-
 }
