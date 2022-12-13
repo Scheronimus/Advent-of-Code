@@ -10,10 +10,7 @@ public class NestedArrayStringParserTest {
     @Test
     public void testBuildList() {
         NestedArrayStringParser parser = new NestedArrayStringParser();
-
-
         List<Object> res;
-
         res = parser.buildList("[1,[2,[3,[4,[5,6,7]]]],8,9]");
         Assertions.assertEquals("[1, [2, [3, [4, [5, 6, 7]]]], 8, 9]", res.toString());
 
