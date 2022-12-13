@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import helper.Puzzle;
@@ -13,6 +14,7 @@ import helper.Puzzle;
 public class DistressSignal extends Puzzle {
 
     List<List<List<Object>>> pairs = new ArrayList<>();
+    List<List<Object>> fullList = new ArrayList<>();
 
     protected DistressSignal(final String input) throws IOException {
         super(input);
@@ -21,14 +23,11 @@ public class DistressSignal extends Puzzle {
             String line;
             List<List<Object>> pair = new ArrayList<>();
             while ((line = br.readLine()) != null) {
-
-
                 if (!line.isEmpty()) {
                     NestedArrayStringParser parser = new NestedArrayStringParser();
                     List<Object> result = parser.buildList(line);
-                    System.out.println(result);
-
                     pair.add(result);
+                    fullList.add(result);
                     if (pair.size() == 2) {
                         pairs.add(pair);
                         pair = new ArrayList<>();
@@ -84,7 +83,6 @@ public class DistressSignal extends Puzzle {
     }
 
     private int compare(final Integer obj1, final Integer obj2) {
-        System.out.println("HELLO " + obj1);
         if (obj1 == obj2) {
             return 0;
         } else if (obj1 > obj2) {
@@ -97,28 +95,30 @@ public class DistressSignal extends Puzzle {
 
     @Override
     public Object getAnswer1() {
-        System.out.println("Answer1");
         int index = 1;
         int result = 0;
         for (List<List<Object>> pair : pairs) {
             int res = compare(pair.get(0), pair.get(1));
             if (res == 1) {
-                System.out.println("Valid: " + index);
                 result += index;
             }
             index++;
         }
-        // List<Object> list1 = pairs.get(6).get(0);
-        // List<Object> list2 = pairs.get(6).get(1);
-        // return compare(list1, list2);
-
         return result;
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        NestedArrayStringParser parser = new NestedArrayStringParser();
+        List<Object> dividerPackets1 = parser.buildList("[[2]]");
+        fullList.add(dividerPackets1);
+
+        parser = new NestedArrayStringParser();
+        List<Object> dividerPackets2 = parser.buildList("[[6]]");
+        fullList.add(dividerPackets2);
+
+        Collections.sort(fullList, (left, right) -> compare(right, left));
+        return (fullList.indexOf(dividerPackets1) + 1) * (fullList.indexOf(dividerPackets2) + 1);
     }
 
     public static void main(final String[] args) throws IOException {
