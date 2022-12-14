@@ -1,14 +1,39 @@
 package day14;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import helper.Puzzle;
 
 public class RegolithReservoir extends Puzzle {
+    // List<DrawingInstruction> drawingInstructions = new ArrayList<>();
+    Slice slice = new Slice();
 
-    protected RegolithReservoir(String input) throws IOException {
+    protected RegolithReservoir(final String input) throws IOException {
         super(input);
-        // TODO Auto-generated constructor stub
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(getInputFile()), StandardCharsets.UTF_8));) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                // System.out.println(line);
+                List<Point> pointOrder = new ArrayList<>();
+                String[] split = line.split("->");
+                for (String value : split) {
+                    value = value.trim();
+                    String[] split2 = value.split(",");
+                    pointOrder.add(new Point(Integer.parseInt(split2[0]), Integer.parseInt(split2[1])));
+                }
+                // drawingInstructions.add(new DrawingInstruction(pointOrder));
+                slice.addStones(new DrawingInstruction(pointOrder));
+            }
+            System.out.println(slice);
+        }
     }
 
     @Override
