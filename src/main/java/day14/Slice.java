@@ -38,15 +38,14 @@ public class Slice {
                 } else {
                     sb.append('.');
                 }
-
             }
             sb.append("\n");
         }
         return sb.toString();
     }
 
-    public boolean dropSand(Point Start) {
-        Point next = new Point(Start.getX(), Start.getY() + 1);
+    public boolean dropSand(Point start) {
+        Point next = new Point(start.getX(), start.getY() + 1);
 
         while (!rocks.contains(next) && !sands.contains(next)) {
             if (next.getY() + 1 > this.bottomRight.getY()) {
@@ -55,27 +54,26 @@ public class Slice {
             next.setY(next.getY() + 1);
 
         }
+        if (next.getX() == 500 && next.getY() == 0) {
+            return false;
+        }
 
         Point left = new Point(next.getX() - 1, next.getY());
         if (!rocks.contains(left) && !sands.contains(left)) {
             return dropSand(left);
-            // return;
         }
         Point right = new Point(next.getX() + 1, next.getY());
 
         if (!rocks.contains(right) && !sands.contains(right)) {
             return dropSand(right);
-
         }
 
         sands.add(generateNewPoint(next.getX(), next.getY() - 1));
         return true;
-
     }
 
 
     public void addStones(final DrawingInstruction instruction) {
-        // for point:instruction.pointOrder
         for (int i = 0; i < instruction.pointOrder.size() - 1; i++) {
             printStonelineBetween(instruction.pointOrder.get(i), instruction.pointOrder.get(i + 1));
         }

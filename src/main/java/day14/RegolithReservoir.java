@@ -11,7 +11,7 @@ import java.util.List;
 import helper.Puzzle;
 
 public class RegolithReservoir extends Puzzle {
-    // List<DrawingInstruction> drawingInstructions = new ArrayList<>();
+
     Slice slice = new Slice();
 
     protected RegolithReservoir(final String input) throws IOException {
@@ -21,7 +21,7 @@ public class RegolithReservoir extends Puzzle {
             String line;
 
             while ((line = br.readLine()) != null) {
-                // System.out.println(line);
+
                 List<Point> pointOrder = new ArrayList<>();
                 String[] split = line.split("->");
                 for (String value : split) {
@@ -29,10 +29,8 @@ public class RegolithReservoir extends Puzzle {
                     String[] split2 = value.split(",");
                     pointOrder.add(new Point(Integer.parseInt(split2[0]), Integer.parseInt(split2[1])));
                 }
-                // drawingInstructions.add(new DrawingInstruction(pointOrder));
                 slice.addStones(new DrawingInstruction(pointOrder));
             }
-            System.out.println(slice);
         }
     }
 
@@ -44,19 +42,31 @@ public class RegolithReservoir extends Puzzle {
             count++;
         }
 
-        System.out.println(slice);
+        // System.out.println(slice);
         return count;
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        int count = 0;
+        List<Point> points = new ArrayList<>();
+        points.add(new Point(500 - (slice.bottomRight.getY() + 2), slice.bottomRight.getY() + 2));
+        points.add(new Point(500 + (slice.bottomRight.getY() + 2), slice.bottomRight.getY() + 2));
+
+        slice.addStones(new DrawingInstruction(points));
+        slice.source.setY(slice.source.getY() - 1);
+        while (slice.dropSand(slice.source)) {
+            count++;
+        }
+
+        // System.out.println(slice);
+        return count;
     }
 
     public static void main(final String[] args) throws IOException {
         RegolithReservoir regolithReservoir = new RegolithReservoir("day14/input");
         System.out.println("Answer1: " + regolithReservoir.getAnswer1());
+        regolithReservoir = new RegolithReservoir("day14/input");
         System.out.println("Answer2: " + regolithReservoir.getAnswer2());
     }
 
