@@ -38,8 +38,14 @@ public class RegolithReservoir extends Puzzle {
 
     @Override
     public Object getAnswer1() {
-        // TODO Auto-generated method stub
-        return null;
+        int count = 0;
+
+        while (slice.dropSand(slice.source)) {
+            count++;
+        }
+
+        System.out.println(slice);
+        return count;
     }
 
     @Override

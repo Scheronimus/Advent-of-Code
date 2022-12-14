@@ -9,6 +9,7 @@ public class Slice {
 
     Point source = new Point(500, 0);
     List<Point> rocks = new ArrayList<>();
+    List<Point> sands = new ArrayList<>();
 
     public Slice(final Point topLeft, final Point bottomRight) {
         super();
@@ -32,6 +33,8 @@ public class Slice {
                     sb.append('+');
                 } else if (rocks.contains(p)) {
                     sb.append('#');
+                } else if (sands.contains(p)) {
+                    sb.append('O');
                 } else {
                     sb.append('.');
                 }
@@ -40,6 +43,34 @@ public class Slice {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public boolean dropSand(Point Start) {
+        Point next = new Point(Start.getX(), Start.getY() + 1);
+
+        while (!rocks.contains(next) && !sands.contains(next)) {
+            if (next.getY() + 1 > this.bottomRight.getY()) {
+                return false;
+            }
+            next.setY(next.getY() + 1);
+
+        }
+
+        Point left = new Point(next.getX() - 1, next.getY());
+        if (!rocks.contains(left) && !sands.contains(left)) {
+            return dropSand(left);
+            // return;
+        }
+        Point right = new Point(next.getX() + 1, next.getY());
+
+        if (!rocks.contains(right) && !sands.contains(right)) {
+            return dropSand(right);
+
+        }
+
+        sands.add(generateNewPoint(next.getX(), next.getY() - 1));
+        return true;
+
     }
 
 
