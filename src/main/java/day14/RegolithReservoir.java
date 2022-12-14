@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import helper.Puzzle;
 
-public class Day14 extends Puzzle {
+public class RegolithReservoir extends Puzzle {
 
-    protected Day14(String input) throws IOException {
+    protected RegolithReservoir(String input) throws IOException {
         super(input);
         // TODO Auto-generated constructor stub
     }
@@ -24,9 +24,9 @@ public class Day14 extends Puzzle {
     }
 
     public static void main(final String[] args) throws IOException {
-        Day14 day14 = new Day14("day14/input");
-        System.out.println("Answer1: " + day14.getAnswer1());
-        System.out.println("Answer2: " + day14.getAnswer2());
+        RegolithReservoir regolithReservoir = new RegolithReservoir("day14/input");
+        System.out.println("Answer1: " + regolithReservoir.getAnswer1());
+        System.out.println("Answer2: " + regolithReservoir.getAnswer2());
     }
 
 }
