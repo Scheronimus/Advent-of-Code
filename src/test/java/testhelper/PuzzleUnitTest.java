@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import helper.Puzzle;
 
 public abstract class PuzzleUnitTest {
-    Object expectedAnswer1;
-    Object expectedAnswer2;
-    Puzzle puzzle;
+    protected Object expectedAnswer1;
+    protected Object expectedAnswer2;
+    protected Puzzle puzzle;
 
     public PuzzleUnitTest(final Puzzle puzzle, final Object expectedAnswer1, final Object expectedAnswer2)
             throws IOException {
