@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import helper.Geometry;
 import helper.Puzzle;
 
 public class BeaconExclusionZone extends Puzzle {
@@ -19,7 +18,7 @@ public class BeaconExclusionZone extends Puzzle {
     List<Sensor> sensors = new ArrayList<>();
     List<Point> sensorList = new ArrayList<>();
     List<Point> beaconList = new ArrayList<>();
-
+    SensorsMap sensorsMap;
 
     protected BeaconExclusionZone(final String input) throws IOException {
         super(input);
@@ -44,62 +43,21 @@ public class BeaconExclusionZone extends Puzzle {
                             Integer.parseInt(sensorMatcher.group(4))));
                 }
             }
-        }
-    }
 
-    public String visualized(final List<Sensor> sensors, final List<Point> sensorList, final List<Point> beaconList) {
-        StringBuilder sb = new StringBuilder();
-        for (int y = -20; y < 30; y++) {
-            for (int x = -20; x < 40; x++) {
-                Point p = new Point(x, y);
-                if (sensorList.contains(p)) {
-                    sb.append('S');
-                } else if (beaconList.contains(p)) {
-                    sb.append('B');
-                } else if (isInRangeOfSensor(p, sensors)) {
-                    sb.append('#');
-                } else {
-                    sb.append('.');
-                }
-            }
-            sb.append('\n');
-        }
-        return sb.toString();
-
-    }
-
-    private boolean isInRangeOfSensor(final Point p, final List<Sensor> sensors) {
-        for (Sensor sensor : sensors) {
-            if (!sensorList.contains(p) && !beaconList.contains(p)) {
-                if (Geometry.manhattanDistance(sensor.sensor, p) <= sensor.covering) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void getOverallRange(final List<Sensor> sensors) {
-        int xMax, xMin, yMax, yMin = 0;
-        for (Sensor sensor : sensors) {
-
+            sensorsMap = new SensorsMap(sensors, sensorList, beaconList);
         }
     }
 
 
     @Override
     public Object getAnswer1() {
-        String s = visualized(sensors, sensorList, beaconList);
-        System.out.println(s);
-        int result = 0;
-        for (int i = -5; i < 30; i++) {
-            Point p = new Point(i, 10);
-            if (isInRangeOfSensor(p, sensors)) {
-                result++;
-            }
+        throw new RuntimeException("Use other function!!");
+    }
 
-        }
-        return result;
+    public Object getAnswer1(int y) {
+
+        // System.out.println(sensorsMap.visualized());
+        return sensorsMap.getCoveredSpotInY(y);
     }
 
     @Override
@@ -110,7 +68,7 @@ public class BeaconExclusionZone extends Puzzle {
 
     public static void main(final String[] args) throws IOException {
         BeaconExclusionZone beaconExclusionZone = new BeaconExclusionZone("day15/input");
-        System.out.println("Answer1: " + beaconExclusionZone.getAnswer1());
+        System.out.println("Answer1: " + beaconExclusionZone.getAnswer1(2000000));
 
         System.out.println("Answer2: " + beaconExclusionZone.getAnswer2());
     }
