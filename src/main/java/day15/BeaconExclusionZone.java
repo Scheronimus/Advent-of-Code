@@ -47,12 +47,41 @@ public class BeaconExclusionZone extends Puzzle {
     }
 
     public String visualized(final List<Sensor> sensors, final List<Point> sensorList, final List<Point> beaconList) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        for (int y = -20; y < 30; y++) {
+            for (int x = -20; x < 40; x++) {
+                Point p = new Point(x, y);
+                if (sensorList.contains(p)) {
+                    sb.append('S');
+                } else if (beaconList.contains(p)) {
+                    sb.append('B');
+                } else if (isInRangeOfSensor(p, sensors)) {
+                    sb.append('#');
+                } else {
+                    sb.append('.');
+                }
+            }
+            sb.append('\n');
+        }
+        return sb.toString();
 
+    }
+
+    private boolean isInRangeOfSensor(final Point p, final List<Sensor> sensors) {
+        for (Sensor sensor : sensors) {
+            if (!sensorList.contains(p) && !beaconList.contains(p)) {
+                if (sensor.sensor.distance(p) <= sensor.covering) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public Object getAnswer1() {
+        String s = visualized(sensors, sensorList, beaconList);
+        System.out.println(s);
         int result = 0;
         for (int i = -5; i < 30; i++) {
             Point p = new Point(i, 11);
