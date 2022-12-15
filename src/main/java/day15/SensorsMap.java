@@ -19,6 +19,11 @@ public class SensorsMap {
         this.sensorList = sensorList;
         this.beaconList = beaconList;
 
+        setMinMax(sensors);
+
+    }
+
+    private void setMinMax(List<Sensor> sensors) {
         Integer xMax = null;
         Integer xMin = null;
         Integer yMax = null;
@@ -48,7 +53,6 @@ public class SensorsMap {
         this.xMin = xMin;
         this.yMax = yMax;
         this.yMin = yMin;
-
     }
 
 
@@ -91,7 +95,8 @@ public class SensorsMap {
                     if (sensor == null) {
                         return p;
                     } else
-                        x = sensor.xMaxRangeIn(y) - 1;
+                        // skip all x until right border of the sensor
+                        x = sensor.xMaxRangeIn(y);
                 }
             }
         }

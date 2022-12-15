@@ -17,7 +17,7 @@ public class Sensor {
     }
 
     public int xMaxRangeIn(int y) {
-        return covering + 1 - Math.abs(sensor.y - y) + sensor.x;
+        return covering - Math.abs(sensor.y - y) + sensor.x;
     }
 
 
