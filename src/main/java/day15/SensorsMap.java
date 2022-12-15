@@ -52,6 +52,27 @@ public class SensorsMap {
     }
 
 
+    public String visualized(int min, int max) {
+        StringBuilder sb = new StringBuilder();
+        for (int y = min; y <= max; y++) {
+            for (int x = min; x <= max; x++) {
+                Point p = new Point(x, y);
+                if (sensorList.contains(p)) {
+                    sb.append('S');
+                } else if (beaconList.contains(p)) {
+                    sb.append('B');
+                } else if (isInRangeOfSensor(p, sensors)) {
+                    sb.append('#');
+                } else {
+                    sb.append('.');
+                }
+            }
+            sb.append('\n');
+        }
+        return sb.toString();
+
+    }
+
     public String visualized() {
         StringBuilder sb = new StringBuilder();
         for (int y = yMin; y <= yMax; y++) {
@@ -71,6 +92,31 @@ public class SensorsMap {
         }
         return sb.toString();
 
+    }
+
+
+    public Point findSpotBetween(int min, int max) {
+        for (int y = min; y <= max; y++) {
+            for (int x = min; x <= max; x++) {
+                Point p = new Point(x, y);
+                Sensor sensor = inRangeOfSensor(p, sensors);
+
+                if (!sensorList.contains(p) && !beaconList.contains(p)) {
+                    if (sensor == null) {
+                        return p;
+                    } else
+                        x = xMaxRangeIn(sensor, y) - 1;
+                }
+
+
+            }
+        }
+        return null;
+
+    }
+
+    public int xMaxRangeIn(Sensor s, int y) {
+        return s.covering + 1 - Math.abs(s.sensor.y - y) + s.sensor.x;
     }
 
     public int getCoveredSpotInY(int y) {
@@ -94,6 +140,18 @@ public class SensorsMap {
             }
         }
         return false;
+
+    }
+
+    private Sensor inRangeOfSensor(final Point p, final List<Sensor> sensors) {
+        for (Sensor sensor : sensors) {
+            if (!sensorList.contains(p) && !beaconList.contains(p)) {
+                if (Geometry.manhattanDistance(sensor.sensor, p) <= sensor.covering) {
+                    return sensor;
+                }
+            }
+        }
+        return null;
     }
 
 }

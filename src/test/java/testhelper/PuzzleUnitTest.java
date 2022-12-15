@@ -11,7 +11,7 @@ import helper.Puzzle;
 
 public abstract class PuzzleUnitTest {
     protected Object expectedAnswer1;
-    Object expectedAnswer2;
+    protected Object expectedAnswer2;
     protected Puzzle puzzle;
 
     public PuzzleUnitTest(final Puzzle puzzle, final Object expectedAnswer1, final Object expectedAnswer2)

@@ -43,7 +43,6 @@ public class BeaconExclusionZone extends Puzzle {
                             Integer.parseInt(sensorMatcher.group(4))));
                 }
             }
-
             sensorsMap = new SensorsMap(sensors, sensorList, beaconList);
         }
     }
@@ -56,21 +55,25 @@ public class BeaconExclusionZone extends Puzzle {
 
     public Object getAnswer1(int y) {
 
-        // System.out.println(sensorsMap.visualized());
+        // System.out.println(sensorsMap.visualized(0, 20));
         return sensorsMap.getCoveredSpotInY(y);
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Use other function!!");
+    }
+
+    public Object getAnswer2(int min, int max) {
+        Point p = sensorsMap.findSpotBetween(min, max);
+        return p.x * 4000000L + p.y;
     }
 
     public static void main(final String[] args) throws IOException {
         BeaconExclusionZone beaconExclusionZone = new BeaconExclusionZone("day15/input");
         System.out.println("Answer1: " + beaconExclusionZone.getAnswer1(2000000));
 
-        System.out.println("Answer2: " + beaconExclusionZone.getAnswer2());
+        System.out.println("Answer2: " + beaconExclusionZone.getAnswer2(0, 4000000));
     }
 
 }

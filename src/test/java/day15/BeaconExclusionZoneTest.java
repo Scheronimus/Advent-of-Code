@@ -12,7 +12,7 @@ import testhelper.PuzzleUnitTest;
 public class BeaconExclusionZoneTest extends PuzzleUnitTest {
 
     public BeaconExclusionZoneTest() throws IOException {
-        super(new BeaconExclusionZone("day15/test_input"), 26, null);
+        super(new BeaconExclusionZone("day15/test_input"), 26, 56000011L);
 
     }
 
@@ -23,6 +23,15 @@ public class BeaconExclusionZoneTest extends PuzzleUnitTest {
             fail("Expected Result not yet defined");
         }
         assertEquals(expectedAnswer1, ((BeaconExclusionZone)puzzle).getAnswer1(10));
+    }
+
+    @Override
+    @Test
+    public void answer2test() {
+        if (expectedAnswer2 == null) {
+            fail("Expected Result not yet defined");
+        }
+        assertEquals(expectedAnswer2, ((BeaconExclusionZone)puzzle).getAnswer2(0, 20));
     }
 
 }
