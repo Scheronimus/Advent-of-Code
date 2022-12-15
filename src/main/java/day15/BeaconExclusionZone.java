@@ -65,7 +65,7 @@ public class BeaconExclusionZone extends Puzzle {
     }
 
     public Object getAnswer2(int min, int max) {
-        Point p = sensorsMap.findSpotBetween(min, max);
+        Point p = sensorsMap.findBlindSpotBetween(min, max);
         return p.x * 4000000L + p.y;
     }
 

@@ -16,5 +16,9 @@ public class Sensor {
         this.covering = Geometry.manhattanDistance(sensor, closestBeacon);
     }
 
+    public int xMaxRangeIn(int y) {
+        return covering + 1 - Math.abs(sensor.y - y) + sensor.x;
+    }
+
 
 }

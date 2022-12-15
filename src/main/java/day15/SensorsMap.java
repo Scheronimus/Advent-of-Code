@@ -53,27 +53,14 @@ public class SensorsMap {
 
 
     public String visualized(int min, int max) {
-        StringBuilder sb = new StringBuilder();
-        for (int y = min; y <= max; y++) {
-            for (int x = min; x <= max; x++) {
-                Point p = new Point(x, y);
-                if (sensorList.contains(p)) {
-                    sb.append('S');
-                } else if (beaconList.contains(p)) {
-                    sb.append('B');
-                } else if (isInRangeOfSensor(p, sensors)) {
-                    sb.append('#');
-                } else {
-                    sb.append('.');
-                }
-            }
-            sb.append('\n');
-        }
-        return sb.toString();
-
+        return visualized(min, max, min, max);
     }
 
     public String visualized() {
+        return visualized(xMin, xMax, yMin, yMax);
+    }
+
+    private String visualized(int xMin, int xMax, int yMin, int yMax) {
         StringBuilder sb = new StringBuilder();
         for (int y = yMin; y <= yMax; y++) {
             for (int x = xMin; x <= xMax; x++) {
@@ -91,11 +78,10 @@ public class SensorsMap {
             sb.append('\n');
         }
         return sb.toString();
-
     }
 
 
-    public Point findSpotBetween(int min, int max) {
+    public Point findBlindSpotBetween(int min, int max) {
         for (int y = min; y <= max; y++) {
             for (int x = min; x <= max; x++) {
                 Point p = new Point(x, y);
@@ -105,18 +91,11 @@ public class SensorsMap {
                     if (sensor == null) {
                         return p;
                     } else
-                        x = xMaxRangeIn(sensor, y) - 1;
+                        x = sensor.xMaxRangeIn(y) - 1;
                 }
-
-
             }
         }
         return null;
-
-    }
-
-    public int xMaxRangeIn(Sensor s, int y) {
-        return s.covering + 1 - Math.abs(s.sensor.y - y) + s.sensor.x;
     }
 
     public int getCoveredSpotInY(int y) {
@@ -126,20 +105,12 @@ public class SensorsMap {
             if (isInRangeOfSensor(p, sensors)) {
                 result++;
             }
-
         }
         return result;
     }
 
     private boolean isInRangeOfSensor(final Point p, final List<Sensor> sensors) {
-        for (Sensor sensor : sensors) {
-            if (!sensorList.contains(p) && !beaconList.contains(p)) {
-                if (Geometry.manhattanDistance(sensor.sensor, p) <= sensor.covering) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return inRangeOfSensor(p, sensors) != null;
 
     }
 
