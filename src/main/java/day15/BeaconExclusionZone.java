@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import helper.Geometry;
 import helper.Puzzle;
 
 public class BeaconExclusionZone extends Puzzle {
@@ -70,7 +71,7 @@ public class BeaconExclusionZone extends Puzzle {
     private boolean isInRangeOfSensor(final Point p, final List<Sensor> sensors) {
         for (Sensor sensor : sensors) {
             if (!sensorList.contains(p) && !beaconList.contains(p)) {
-                if (sensor.sensor.distance(p) <= sensor.covering) {
+                if (Geometry.manhattanDistance(sensor.sensor, p) <= sensor.covering) {
                     return true;
                 }
             }
@@ -78,21 +79,25 @@ public class BeaconExclusionZone extends Puzzle {
         return false;
     }
 
+    private void getOverallRange(final List<Sensor> sensors) {
+        int xMax, xMin, yMax, yMin = 0;
+        for (Sensor sensor : sensors) {
+
+        }
+    }
+
+
     @Override
     public Object getAnswer1() {
         String s = visualized(sensors, sensorList, beaconList);
         System.out.println(s);
         int result = 0;
         for (int i = -5; i < 30; i++) {
-            Point p = new Point(i, 11);
-            for (Sensor sensor : sensors) {
-                if (!sensorList.contains(p) && !beaconList.contains(p)) {
-                    if (sensor.sensor.distance(p) <= sensor.covering) {
-                        result++;
-                        break;
-                    }
-                }
+            Point p = new Point(i, 10);
+            if (isInRangeOfSensor(p, sensors)) {
+                result++;
             }
+
         }
         return result;
     }
