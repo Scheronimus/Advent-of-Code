@@ -7,7 +7,7 @@ import testhelper.PuzzleUnitTest;
 public class ProboscideaVolcaniumTest extends PuzzleUnitTest {
 
     public ProboscideaVolcaniumTest() throws IOException {
-        super(new ProboscideaVolcanium("day16/test_input"), null, null);
+        super(new ProboscideaVolcanium("day16/test_input"), 1651, null);
         // TODO Auto-generated constructor stub
     }
 

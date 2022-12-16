@@ -1,4 +1,4 @@
-package day12.djikstra;
+package helper.djikstra;
 
 
 import java.util.ArrayList;

@@ -15,5 +15,10 @@ public class Valve {
         this.tunnelsTo = tunnelsTo;
     }
 
+    @Override
+    public String toString() {
+        return "Valve [id=" + id + ", flow=" + flow + ", tunnelsTo=" + tunnelsTo + ", valveOpen=" + valveOpen + "]";
+    }
+
 
 }

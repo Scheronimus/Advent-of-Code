@@ -1,4 +1,4 @@
-package day12.djikstra;
+package helper.djikstra;
 
 public class Vertex {
     final private String id;

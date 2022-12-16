@@ -8,11 +8,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import day12.djikstra.DijkstraAlgorithm;
-import day12.djikstra.Edge;
-import day12.djikstra.Graph;
-import day12.djikstra.Vertex;
 import helper.Puzzle;
+import helper.djikstra.DijkstraAlgorithm;
+import helper.djikstra.Edge;
+import helper.djikstra.Graph;
+import helper.djikstra.Vertex;
 
 public class HillClimbingAlgorithm extends Puzzle {
 
