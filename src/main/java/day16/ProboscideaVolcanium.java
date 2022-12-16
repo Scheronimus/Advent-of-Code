@@ -1,14 +1,29 @@
 package day16;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import helper.Puzzle;
 
 public class ProboscideaVolcanium extends Puzzle {
 
+    List<Valve> valves = new ArrayList<>();
+
     protected ProboscideaVolcanium(final String input) throws IOException {
         super(input);
-        // TODO Auto-generated constructor stub
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(getInputFile()), StandardCharsets.UTF_8));) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+            }
+        }
     }
 
     @Override
