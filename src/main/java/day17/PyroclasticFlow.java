@@ -64,7 +64,6 @@ public class PyroclasticFlow extends Puzzle {
                 char direction = jetPattern.charAt((int)(time % jetPattern.length()));
                 time++;
 
-
                 if (direction == '<') {
                     if (rock.canMoveLeft(b)) {
                         rock.moveLeft();
@@ -80,25 +79,23 @@ public class PyroclasticFlow extends Puzzle {
                     falling = false;
                 }
             }
-
             b.addRock(rock);
-
         }
         return (long)b.height;
     }
 
     private long calculateHeightAtMaxBasedOnLoopDetection(Snapshot latestSnapshot, Snapshot firstOccurence,
             LoopDetection loopDetection, double maxNumberOfStone) {
+        // System.out.println(b.visualized());
         double currentHeight = latestSnapshot.height;
         double currentStoneNumber = latestSnapshot.stoneNumber;
-        // System.out.println(b.visualized());
 
         double diffStone = latestSnapshot.stoneNumber - firstOccurence.stoneNumber;
         double diffHeight = latestSnapshot.height - firstOccurence.height;
 
-        long nbloop = (long)(maxNumberOfStone - currentStoneNumber) / (long)diffStone;
+        long nbLoop = (long)(maxNumberOfStone - currentStoneNumber) / (long)diffStone;
 
-        double restStone = maxNumberOfStone - (currentStoneNumber + diffStone * nbloop);
+        double restStone = maxNumberOfStone - (currentStoneNumber + diffStone * nbLoop);
         double restHeight = 0;
         double indexSearched = firstOccurence.stoneNumber + restStone;
         for (Object tempSnap : loopDetection.map.keySet()) {
@@ -107,7 +104,7 @@ public class PyroclasticFlow extends Puzzle {
                 break;
             }
         }
-        return (long)(currentHeight + nbloop * diffHeight + restHeight);
+        return (long)(currentHeight + nbLoop * diffHeight + restHeight);
     }
 
     @Override
@@ -120,11 +117,9 @@ public class PyroclasticFlow extends Puzzle {
         return runSimulation(1000000000000L, true);
     }
 
-
     public static void main(final String[] args) throws IOException {
         PyroclasticFlow pyroclasticFlow = new PyroclasticFlow("day17/input");
         System.out.println("Answer1: " + pyroclasticFlow.getAnswer1());
         System.out.println("Answer2: " + pyroclasticFlow.getAnswer2());
     }
-
 }
