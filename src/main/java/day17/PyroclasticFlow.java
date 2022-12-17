@@ -60,7 +60,7 @@ public class PyroclasticFlow extends Puzzle {
                 if (find == null) {
                     loopDetection.addItem(snap);
                 } else {
-                    System.out.println("loop find");
+
                     // System.out.println(b.visualized());
 
                     double diffstone = snap.stoneNumber - ((Snapshot)find).stoneNumber;
@@ -68,40 +68,33 @@ public class PyroclasticFlow extends Puzzle {
 
                     long nbloop = (long)(maxNumberOfStone - numberOfStone) / (long)diffstone;
 
-                    System.out.println("nbLoop: " + nbloop);
+
                     double currenTStone = numberOfStone + diffstone * nbloop;
-                    System.out.println("currenTStone:     " + (long)currenTStone);
-                    System.out.println("maxNumberOfStone: " + (long)maxNumberOfStone);
-                    // System.out.println((long)currenTStone);
                     double rest = maxNumberOfStone - currenTStone;
                     double restHeight = 0;
                     double indexSearched = ((Snapshot)find).stoneNumber + rest;
-                    System.out.println("indexSearched: " + (long)indexSearched);
                     for (Object tempSnap : loopDetection.map.keySet()) {
-
                         Object snappy = loopDetection.map.get(tempSnap);
 
                         if (((Snapshot)snappy).stoneNumber == indexSearched) {
                             restHeight = ((Snapshot)snappy).height - ((Snapshot)find).height;
                             break;
                         }
-
                     }
-                    System.out.println((long)rest);
+
                     b.height = b.height + nbloop * diffHeight + restHeight;
                     return;
                 }
             }
 
 
-            // loopDetection.addItem(b);
             Rock rock = Rock.createRock(rockPatterns.get((int)(numberOfStone % rockPatterns.size())), (int)b.height);
             boolean falling = true;
             while (falling) {
 
                 char direction = jetPattern.charAt((int)(time % jetPattern.length()));
                 time++;
-                // time = time % jetPattern.length();
+
 
                 if (direction == '<') {
                     if (rock.canMoveLeft(b)) {
