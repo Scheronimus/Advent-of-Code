@@ -38,16 +38,23 @@ public class PyroclasticFlow extends Puzzle {
         rockPatterns.add(RockShape.LINE);
         rockPatterns.add(RockShape.SQUARE);
 
-        // int numberOfStone = 0;
+        int maxNumberOfStone = 2022;
+
+        runSimulation(rockPatterns, maxNumberOfStone, b);
+
+        return b.height;
+    }
+
+    private void runSimulation(List<RockShape> rockPatterns, long maxNumberOfStone, Board b) {
         int time = 0;
-
-        for (int numberOfStone = 0; numberOfStone < 2022; numberOfStone++) {
-
-            Rock rock = Rock.createRock(rockPatterns.get(numberOfStone % rockPatterns.size()), b.height);
+        for (long numberOfStone = 0; numberOfStone < maxNumberOfStone; numberOfStone++) {
+            Rock rock = Rock.createRock(rockPatterns.get((int)(numberOfStone % rockPatterns.size())), (int)b.height);
             boolean falling = true;
             while (falling) {
+
                 char direction = jetPattern.charAt(time % jetPattern.length());
                 time++;
+                time = time % jetPattern.length();
 
                 if (direction == '<') {
                     if (rock.canMoveLeft(b)) {
@@ -68,14 +75,24 @@ public class PyroclasticFlow extends Puzzle {
             b.addRock(rock);
 
         }
-
-        return b.height;
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        Board b = new Board();
+
+        List<RockShape> rockPatterns = new ArrayList<>();
+        rockPatterns.add(RockShape.MINUS);
+        rockPatterns.add(RockShape.PLUS);
+        rockPatterns.add(RockShape.L);
+        rockPatterns.add(RockShape.LINE);
+        rockPatterns.add(RockShape.SQUARE);
+
+        long maxNumberOfStone = 1000000000000L;
+
+        runSimulation(rockPatterns, maxNumberOfStone, b);
+
+        return b.height;
     }
 
 

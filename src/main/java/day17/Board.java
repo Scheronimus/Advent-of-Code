@@ -7,7 +7,7 @@ import java.util.List;
 public class Board {
 
     List<Point> rocks = new ArrayList<>();
-    int height = 0;
+    long height = 0;
 
 
     boolean isFree(int x, int y) {
