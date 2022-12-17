@@ -35,8 +35,9 @@ public class PyroclasticFlow extends Puzzle {
         return rockPatterns;
     }
 
-    private void runSimulation(List<RockShape> rockPatterns, double maxNumberOfStone, Board b, boolean detectLoop) {
-
+    private long runSimulation(double maxNumberOfStone, boolean detectLoop) {
+        Board b = new Board();
+        List<RockShape> rockPatterns = initializeRockPattern();
         LoopDetection loopDetection = new LoopDetection();
 
         double time = 0;
@@ -73,7 +74,7 @@ public class PyroclasticFlow extends Puzzle {
                     }
 
                     b.height = b.height + nbloop * diffHeight + restHeight;
-                    return;
+                    return (long)b.height;
                 }
             }
 
@@ -105,26 +106,17 @@ public class PyroclasticFlow extends Puzzle {
             b.addRock(rock);
 
         }
-
+        return (long)b.height;
     }
 
     @Override
     public Object getAnswer1() {
-
-        Board b = new Board();
-        List<RockShape> rockPatterns = initializeRockPattern();
-        int maxNumberOfStone = 2022;
-        runSimulation(rockPatterns, maxNumberOfStone, b, true);
-        return (long)b.height;
+        return runSimulation(2022, true);
     }
 
     @Override
     public Object getAnswer2() {
-        Board b = new Board();
-        List<RockShape> rockPatterns = initializeRockPattern();
-        long maxNumberOfStone = 1000000000000L;
-        runSimulation(rockPatterns, maxNumberOfStone, b, true);
-        return (long)b.height;
+        return runSimulation(1000000000000L, true);
     }
 
 
