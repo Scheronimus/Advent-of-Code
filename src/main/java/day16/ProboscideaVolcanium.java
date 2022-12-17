@@ -71,31 +71,23 @@ public class ProboscideaVolcanium extends Puzzle {
         return new Graph(nodes, edges);
     }
 
-    @Override
-    public Object getAnswer1() {
+    private Map<String, DijkstraAlgorithm> generateDjikstraForAllNode() {
         Map<String, DijkstraAlgorithm> djikstraMap = new HashMap<>();
         for (Valve valve : valves) {
             DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
             dijkstra.execute(nodesMap.get(valve.id));
             djikstraMap.put(valve.id, dijkstra);
         }
+        return djikstraMap;
+    }
 
+    private int searchBest(Map<String, DijkstraAlgorithm> djikstraMap, Valve start) {
         int time = 0;
         int currentFlow = 0;
         int totalFlow = 0;
-        Valve start = null;
-        for (Valve valve : valves) {
-            if (valve.id.equals("AA")) {
-                start = valve;
-            }
-        }
         Set<Valve> opens = new HashSet<>();
 
-
-        int res = searchBest(start, time, currentFlow, totalFlow, djikstraMap, opens);
-
-
-        return res;
+        return searchBest(start, time, currentFlow, totalFlow, djikstraMap, opens);
     }
 
     private int searchBest(Valve start, int time, int currentFlow, int totalFlow,
@@ -143,8 +135,6 @@ public class ProboscideaVolcanium extends Puzzle {
                 if (result > max) {
                     max = result;
                 }
-
-
             }
         }
         if (found > 0) {
@@ -154,11 +144,30 @@ public class ProboscideaVolcanium extends Puzzle {
         }
     }
 
+    private Valve getValveById(String valveId) {
+        Valve start = null;
+        for (Valve valve : valves) {
+            if (valve.id.equals(valveId)) {
+                start = valve;
+            }
+        }
+        return start;
+    }
+
+    @Override
+    public Object getAnswer1() {
+        Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
+        Valve start = getValveById("AA");
+
+        return searchBest(djikstraMap, start);
+    }
+
     @Override
     public Object getAnswer2() {
         // TODO Auto-generated method stub
         return null;
     }
+
 
     public static void main(final String[] args) throws IOException {
         ProboscideaVolcanium proboscideaVolcanium = new ProboscideaVolcanium("day16/input");
