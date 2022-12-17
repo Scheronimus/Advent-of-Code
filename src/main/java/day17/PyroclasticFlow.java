@@ -44,33 +44,15 @@ public class PyroclasticFlow extends Puzzle {
         for (double numberOfStone = 0; numberOfStone < maxNumberOfStone; numberOfStone++) {
 
             if (detectLoop) {
-                Snapshot snap = new Snapshot((int)(numberOfStone % rockPatterns.size()),
+                Snapshot latestSnapshot = new Snapshot((int)(numberOfStone % rockPatterns.size()),
                         (int)time % jetPattern.length(), b.height, time, numberOfStone, b.getTopNivel());
 
-                Object find = loopDetection.detectLoop(snap);
-                if (find == null) {
-                    loopDetection.addItem(snap);
+                Snapshot findPreviousOccurence = (Snapshot)loopDetection.detectLoop(latestSnapshot);
+                if (findPreviousOccurence == null) {
+                    loopDetection.addItem(latestSnapshot);
                 } else {
-                    double currentHeight = snap.height;
-                    // System.out.println(b.visualized());
-
-                    double diffstone = snap.stoneNumber - ((Snapshot)find).stoneNumber;
-                    double diffHeight = snap.height - ((Snapshot)find).height;
-
-                    long nbloop = (long)(maxNumberOfStone - numberOfStone) / (long)diffstone;
-
-
-                    double currenTStone = numberOfStone + diffstone * nbloop;
-                    double rest = maxNumberOfStone - currenTStone;
-                    double restHeight = 0;
-                    double indexSearched = ((Snapshot)find).stoneNumber + rest;
-                    for (Object tempSnap : loopDetection.map.keySet()) {
-                        if (((Snapshot)tempSnap).stoneNumber == indexSearched) {
-                            restHeight = ((Snapshot)tempSnap).height - ((Snapshot)find).height;
-                            break;
-                        }
-                    }
-                    return (long)(currentHeight + nbloop * diffHeight + restHeight);
+                    return calculateHeightAtMaxBasedOnLoopDetection(latestSnapshot, findPreviousOccurence,
+                            loopDetection, maxNumberOfStone);
                 }
             }
 
@@ -103,6 +85,29 @@ public class PyroclasticFlow extends Puzzle {
 
         }
         return (long)b.height;
+    }
+
+    private long calculateHeightAtMaxBasedOnLoopDetection(Snapshot latestSnapshot, Snapshot firstOccurence,
+            LoopDetection loopDetection, double maxNumberOfStone) {
+        double currentHeight = latestSnapshot.height;
+        double currentStoneNumber = latestSnapshot.stoneNumber;
+        // System.out.println(b.visualized());
+
+        double diffStone = latestSnapshot.stoneNumber - firstOccurence.stoneNumber;
+        double diffHeight = latestSnapshot.height - firstOccurence.height;
+
+        long nbloop = (long)(maxNumberOfStone - currentStoneNumber) / (long)diffStone;
+
+        double restStone = maxNumberOfStone - (currentStoneNumber + diffStone * nbloop);
+        double restHeight = 0;
+        double indexSearched = firstOccurence.stoneNumber + restStone;
+        for (Object tempSnap : loopDetection.map.keySet()) {
+            if (((Snapshot)tempSnap).stoneNumber == indexSearched) {
+                restHeight = ((Snapshot)tempSnap).height - firstOccurence.height;
+                break;
+            }
+        }
+        return (long)(currentHeight + nbloop * diffHeight + restHeight);
     }
 
     @Override
