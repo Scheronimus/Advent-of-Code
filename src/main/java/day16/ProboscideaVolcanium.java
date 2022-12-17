@@ -48,8 +48,6 @@ public class ProboscideaVolcanium extends Puzzle {
                 }
             }
         }
-
-        System.out.println(valves);
         graph = generateGraph(valves);
     }
 
@@ -63,8 +61,6 @@ public class ProboscideaVolcanium extends Puzzle {
             nodes.add(v);
             nodesMap.put(valve.id, v);
         }
-
-        System.out.println(nodesMap);
 
         for (Valve valve : valves) {
             for (String tunnelTo : valve.tunnelsTo) {
@@ -87,7 +83,12 @@ public class ProboscideaVolcanium extends Puzzle {
         int time = 0;
         int currentFlow = 0;
         int totalFlow = 0;
-        Valve start = valves.get(0);
+        Valve start = null;
+        for (Valve valve : valves) {
+            if (valve.id.equals("AA")) {
+                start = valve;
+            }
+        }
         Set<Valve> opens = new HashSet<>();
 
 
@@ -99,10 +100,7 @@ public class ProboscideaVolcanium extends Puzzle {
 
     private int searchBest(Valve start, int time, int currentFlow, int totalFlow,
             Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens) {
-        System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
-        // System.out.println(time);
-        // System.out.println(currentFlow);
-        // System.out.println(totalFlow);
+        // System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
 
         Set<Valve> tempOpens = new HashSet<>(opens);
         if (time >= 30) {
@@ -113,18 +111,11 @@ public class ProboscideaVolcanium extends Puzzle {
             currentFlow += start.flow;
             time++;
             tempOpens.add(start);
-            // System.out.println("open " + start);
-            // System.out.println(time);
-            // System.out.println(currentFlow);
-            // System.out.println(totalFlow);
-            System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
+            // System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
         }
         if (time >= 30) {
             return totalFlow;
         }
-
-        // Set<Valve> tempOpens = new HashSet<>(opens);
-
 
         DijkstraAlgorithm dji = djikstraMap.get(start.id);
         int max = totalFlow;
@@ -150,9 +141,6 @@ public class ProboscideaVolcanium extends Puzzle {
                 }
 
                 if (result > max) {
-                    if (max > 2000) {
-                        System.out.println("coucou");
-                    }
                     max = result;
                 }
 
