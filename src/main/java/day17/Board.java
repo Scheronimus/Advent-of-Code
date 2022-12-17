@@ -7,7 +7,7 @@ import java.util.List;
 public class Board {
 
     List<Point> rocks = new ArrayList<>();
-    long height = 0;
+    double height = 0;
 
 
     boolean isFree(int x, int y) {
@@ -25,5 +25,18 @@ public class Board {
                 height = point.y;
             }
         }
+    }
+
+    List<Integer> getTopNivel() {
+        List<Integer> topNivel = new ArrayList<>();
+        for (int x = 1; x <= 7; x++) {
+            for (int y = (int)height; y >= 0; y--) {
+                if (y == 0 || rocks.contains(new Point(x, y))) {
+                    topNivel.add(y - (int)height);
+                    break;
+                }
+            }
+        }
+        return topNivel;
     }
 }

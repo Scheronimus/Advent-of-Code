@@ -40,21 +40,46 @@ public class PyroclasticFlow extends Puzzle {
 
         int maxNumberOfStone = 2022;
 
-        runSimulation(rockPatterns, maxNumberOfStone, b);
+        runSimulation(rockPatterns, maxNumberOfStone, b, false);
 
         return b.height;
     }
 
-    private void runSimulation(List<RockShape> rockPatterns, long maxNumberOfStone, Board b) {
-        int time = 0;
-        for (long numberOfStone = 0; numberOfStone < maxNumberOfStone; numberOfStone++) {
+    private void runSimulation(List<RockShape> rockPatterns, double maxNumberOfStone, Board b, boolean detectLoop) {
+
+        LoopDetection loopDetection = new LoopDetection();
+
+        double time = 0;
+        for (double numberOfStone = 0; numberOfStone < maxNumberOfStone; numberOfStone++) {
+
+            if (detectLoop) {
+                Snapshot snap = new Snapshot((int)(numberOfStone % rockPatterns.size()),
+                        (int)time % jetPattern.length(), b.height, time, numberOfStone, b.getTopNivel());
+
+                Object find = loopDetection.detectLoop(snap);
+                if (find == null) {
+                    loopDetection.addItem(snap);
+                } else {
+                    System.out.println("loop find");
+
+                    double diffstone = snap.stoneNumber - ((Snapshot)find).stoneNumber;
+                    double diffHeight = snap.height - ((Snapshot)find).height;
+
+                    double nbloop = (maxNumberOfStone - numberOfStone) / diffstone;
+                    b.height = b.height + nbloop * diffHeight;
+                    return;
+                }
+            }
+
+
+            loopDetection.addItem(b);
             Rock rock = Rock.createRock(rockPatterns.get((int)(numberOfStone % rockPatterns.size())), (int)b.height);
             boolean falling = true;
             while (falling) {
 
-                char direction = jetPattern.charAt(time % jetPattern.length());
+                char direction = jetPattern.charAt((int)(time % jetPattern.length()));
                 time++;
-                time = time % jetPattern.length();
+                // time = time % jetPattern.length();
 
                 if (direction == '<') {
                     if (rock.canMoveLeft(b)) {
@@ -75,6 +100,7 @@ public class PyroclasticFlow extends Puzzle {
             b.addRock(rock);
 
         }
+
     }
 
     @Override
@@ -90,7 +116,7 @@ public class PyroclasticFlow extends Puzzle {
 
         long maxNumberOfStone = 1000000000000L;
 
-        runSimulation(rockPatterns, maxNumberOfStone, b);
+        runSimulation(rockPatterns, maxNumberOfStone, b, true);
 
         return b.height;
     }
