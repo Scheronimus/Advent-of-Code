@@ -51,7 +51,7 @@ public class PyroclasticFlow extends Puzzle {
                 if (find == null) {
                     loopDetection.addItem(snap);
                 } else {
-
+                    double currentHeight = snap.height;
                     // System.out.println(b.visualized());
 
                     double diffstone = snap.stoneNumber - ((Snapshot)find).stoneNumber;
@@ -65,16 +65,12 @@ public class PyroclasticFlow extends Puzzle {
                     double restHeight = 0;
                     double indexSearched = ((Snapshot)find).stoneNumber + rest;
                     for (Object tempSnap : loopDetection.map.keySet()) {
-                        Object snappy = loopDetection.map.get(tempSnap);
-
-                        if (((Snapshot)snappy).stoneNumber == indexSearched) {
-                            restHeight = ((Snapshot)snappy).height - ((Snapshot)find).height;
+                        if (((Snapshot)tempSnap).stoneNumber == indexSearched) {
+                            restHeight = ((Snapshot)tempSnap).height - ((Snapshot)find).height;
                             break;
                         }
                     }
-
-                    b.height = b.height + nbloop * diffHeight + restHeight;
-                    return (long)b.height;
+                    return (long)(currentHeight + nbloop * diffHeight + restHeight);
                 }
             }
 
@@ -124,7 +120,6 @@ public class PyroclasticFlow extends Puzzle {
         PyroclasticFlow pyroclasticFlow = new PyroclasticFlow("day17/input");
         System.out.println("Answer1: " + pyroclasticFlow.getAnswer1());
         System.out.println("Answer2: " + pyroclasticFlow.getAnswer2());
-
     }
 
 }

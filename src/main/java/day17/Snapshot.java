@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class Snapshot {
-    int shapeIndex;
-    int stoneIndex;
+    private int shapeIndex;
+    private int jetPatternIndex;
     double height;
     double time;
     double stoneNumber;
-    List<Integer> topNivel;
+    private List<Integer> topNivel;
 
     public Snapshot(int shapeIndex, int stoneIndex, double height, double time, double stoneNumber,
             List<Integer> topNivel) {
         super();
         this.shapeIndex = shapeIndex;
-        this.stoneIndex = stoneIndex;
+        this.jetPatternIndex = stoneIndex;
         this.height = height;
         this.time = time;
         this.stoneNumber = stoneNumber;
@@ -24,7 +24,7 @@ public class Snapshot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(shapeIndex, stoneIndex, topNivel);
+        return Objects.hash(shapeIndex, jetPatternIndex, topNivel);
     }
 
     @Override
@@ -36,14 +36,14 @@ public class Snapshot {
         if (getClass() != obj.getClass())
             return false;
         Snapshot other = (Snapshot)obj;
-        return shapeIndex == other.shapeIndex && stoneIndex == other.stoneIndex
+        return shapeIndex == other.shapeIndex && jetPatternIndex == other.jetPatternIndex
                 && Objects.equals(topNivel, other.topNivel);
     }
 
     @Override
     public String toString() {
-        return "Snapshot [shapeIndex=" + shapeIndex + ", stoneIndex=" + stoneIndex + ", height=" + height + ", time="
-                + time + ", stoneNumber=" + stoneNumber + ", topNivel=" + topNivel + "]";
+        return "Snapshot [shapeIndex=" + shapeIndex + ", stoneIndex=" + jetPatternIndex + ", height=" + height
+                + ", time=" + time + ", stoneNumber=" + stoneNumber + ", topNivel=" + topNivel + "]";
     }
 
 
