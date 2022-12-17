@@ -39,4 +39,24 @@ public class Board {
         }
         return topNivel;
     }
+
+    String visualized() {
+        StringBuilder sb = new StringBuilder();
+        for (int y = (int)height; y >= 0; y--) {
+            for (int x = 0; x <= 8; x++) {
+                if (x == 0 || x == 8) {
+                    sb.append("|");
+
+                } else if (y == 0) {
+                    sb.append("-");
+                } else if (rocks.contains(new Point(x, y))) {
+                    sb.append("#");
+                } else {
+                    sb.append(".");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 }
