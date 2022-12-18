@@ -40,8 +40,22 @@ public class BoilingBoulders extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        Shape shape = new Shape();
+
+        for (Cube cube : cubes) {
+            shape.addCube(cube);
+        }
+        DrawMax max = shape.getXMax();
+
+        Coloring coloring = new Coloring(cubes, max);
+        coloring.color();
+        List<Cube> notColored = coloring.getNotColored();
+
+        // Fill the bubble with cube;
+        for (Cube cube : notColored) {
+            shape.addCube(cube);
+        }
+        return shape.side;
     }
 
     public static void main(final String[] args) throws IOException {
