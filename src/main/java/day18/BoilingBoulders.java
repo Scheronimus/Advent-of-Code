@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import helper.Puzzle;
 
 public class BoilingBoulders extends Puzzle {
+    List<Cube> cubes = new ArrayList<>();
 
     protected BoilingBoulders(String input) throws IOException {
         super(input);
@@ -17,15 +20,22 @@ public class BoilingBoulders extends Puzzle {
             String line;
 
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                String[] split = line.split(",");
+                cubes.add(new Cube(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])));
             }
         }
+
+        System.out.println(cubes);
     }
 
     @Override
     public Object getAnswer1() {
-        // TODO Auto-generated method stub
-        return null;
+        Shape shape = new Shape();
+
+        for (Cube cube : cubes) {
+            shape.addCube(cube);
+        }
+        return shape.side;
     }
 
     @Override
