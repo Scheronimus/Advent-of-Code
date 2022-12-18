@@ -24,8 +24,6 @@ public class BoilingBoulders extends Puzzle {
                 cubes.add(new Cube(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2])));
             }
         }
-
-        System.out.println(cubes);
     }
 
     @Override

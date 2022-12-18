@@ -16,12 +16,9 @@ public class Shape {
                 side--;
                 cubeSide--;
             }
-
         }
-
         cubes.add(cube);
         side += cubeSide;
-
     }
 
     public DrawMax getXMax() {

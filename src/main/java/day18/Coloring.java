@@ -18,20 +18,17 @@ public class Coloring {
         Cube startCube = new Cube(max.xMin, max.yMin, max.zMin);
         colored.add(startCube);
         color(startCube);
-
     }
 
 
     public void color(Cube start) {
         List<Cube> adjacentes = start.getAdjacent();
-
         for (Cube adj : adjacentes) {
             if (!isOutOfBorder(adj) && !colored.contains(adj) && !cubes.contains(adj)) {
                 colored.add(adj);
                 color(adj);
             }
         }
-
     }
 
     public List<Cube> getNotColored() {
@@ -43,19 +40,14 @@ public class Coloring {
                     if (!colored.contains(c) && !cubes.contains(c)) {
                         notColored.add(c);
                     }
-
                 }
             }
         }
         return notColored;
-
     }
 
     public boolean isOutOfBorder(Cube cube) {
-
         return cube.point.getX() > max.xMax || cube.point.getY() > max.yMax || cube.point.getZ() > max.zMax
                 || cube.point.getX() < max.xMin || cube.point.getY() < max.yMin || cube.point.getZ() < max.zMin;
-
-
     }
 }
