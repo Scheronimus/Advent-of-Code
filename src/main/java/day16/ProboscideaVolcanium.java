@@ -90,6 +90,15 @@ public class ProboscideaVolcanium extends Puzzle {
         return searchBest(start, time, currentFlow, totalFlow, djikstraMap, opens);
     }
 
+    private int searchBestWithElephant(Map<String, DijkstraAlgorithm> djikstraMap, Valve start) {
+        int time = 0;
+        int currentFlow = 0;
+        int totalFlow = 0;
+        Set<Valve> opens = new HashSet<>();
+
+        return searchBestWithElephant(start, time, currentFlow, totalFlow, djikstraMap, opens);
+    }
+
     private int searchBest(Valve start, int time, int currentFlow, int totalFlow,
             Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens) {
         // System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
@@ -154,6 +163,68 @@ public class ProboscideaVolcanium extends Puzzle {
         return start;
     }
 
+    public record PossibleSolution(Set<Valve> opens, int totalFlow) {
+    }
+
+    List<PossibleSolution> possibleSolution = new ArrayList<>();
+
+    private int searchBestWithElephant(Valve start, int time, int currentFlow, int totalFlow,
+            Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens) {
+        Set<Valve> tempOpens = new HashSet<>(opens);
+        if (time >= 26) {
+            PossibleSolution possible = new PossibleSolution(new HashSet<>(tempOpens), totalFlow);
+            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
+            return totalFlow;
+        }
+        if (start.flow > 0) {
+            totalFlow += currentFlow;
+            currentFlow += start.flow;
+            time++;
+            tempOpens.add(start);
+            // System.out.println(start + " " + time + " " + currentFlow + " " + totalFlow);
+        }
+        if (time >= 26) {
+            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
+            return totalFlow;
+        }
+
+        DijkstraAlgorithm dji = djikstraMap.get(start.id);
+        int max = totalFlow;
+        int found = 0;
+        for (Valve valve : valves) {
+
+            if (valve != start && !tempOpens.contains(valve) && valve.flow > 0) {
+                found++;
+                LinkedList<Vertex> path = dji.getPath(nodesMap.get(valve.id));
+                int travelTime = path.size() - 1;
+
+                int addFlow;
+                int addTime;
+                int result;
+                if (26 - time < travelTime) {
+                    addFlow = (26 - time) * currentFlow;
+                    result = totalFlow + addFlow;
+                    possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), result));
+                } else {
+                    addFlow = travelTime * currentFlow;
+                    addTime = travelTime;
+                    result = searchBestWithElephant(valve, time + addTime, currentFlow, totalFlow + addFlow,
+                            djikstraMap, tempOpens);
+                }
+
+                if (result > max) {
+                    max = result;
+                }
+            }
+        }
+        possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow + (26 - time) * currentFlow));
+        if (found > 0) {
+            return max;
+        } else {
+            return totalFlow + (26 - time) * currentFlow;
+        }
+    }
+
     @Override
     public Object getAnswer1() {
         Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
@@ -164,8 +235,36 @@ public class ProboscideaVolcanium extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
+        Valve start = getValveById("AA");
+        searchBestWithElephant(djikstraMap, start);
+        int res = 0;
+        for (int i = 0; i <= possibleSolution.size(); i++) {
+            for (int j = i + 1; j <= possibleSolution.size() - 1; j++) {
+                Set<Valve> opens1 = possibleSolution.get(i).opens;
+                Set<Valve> opens2 = possibleSolution.get(j).opens;
+
+                if (areDistinct(opens1, opens2)) {
+                    int total1 = possibleSolution.get(i).totalFlow;
+                    int total2 = possibleSolution.get(j).totalFlow;
+                    res = Math.max(res, total1 + total2);
+                }
+            }
+            if (i % 50000 == 0) {
+                System.out.println(i + "/" + possibleSolution.size());
+            }
+        }
+        return res;
+    }
+
+    public boolean areDistinct(Set<Valve> l1, Set<Valve> l2) {
+        for (Valve valve : l1) {
+            if (l2.contains(valve)) {
+
+                return false;
+            }
+        }
+        return true;
     }
 
 
