@@ -99,6 +99,7 @@ public class ProboscideaVolcanium extends Puzzle {
             Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens, int timeMax) {
         Set<Valve> tempOpens = new HashSet<>(opens);
         if (time >= timeMax) {
+            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
             return totalFlow;
         }
         if (start.flow > 0) {
@@ -108,6 +109,7 @@ public class ProboscideaVolcanium extends Puzzle {
             tempOpens.add(start);
         }
         if (time >= timeMax) {
+            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
             return totalFlow;
         }
 
@@ -127,6 +129,7 @@ public class ProboscideaVolcanium extends Puzzle {
                 if (timeMax - time < travelTime) {
                     addFlow = (timeMax - time) * currentFlow;
                     result = totalFlow + addFlow;
+                    possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), result));
                 } else {
                     addFlow = travelTime * currentFlow;
                     addTime = travelTime;
@@ -139,6 +142,7 @@ public class ProboscideaVolcanium extends Puzzle {
                 }
             }
         }
+        possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow + (26 - time) * currentFlow));
         if (found > 0) {
             return max;
         } else {
@@ -154,70 +158,6 @@ public class ProboscideaVolcanium extends Puzzle {
             }
         }
         return start;
-    }
-
-    private int searchBestWithElephant(Map<String, DijkstraAlgorithm> djikstraMap, Valve start) {
-        int time = 0;
-        int currentFlow = 0;
-        int totalFlow = 0;
-        Set<Valve> opens = new HashSet<>();
-
-        return searchBestWithElephant(start, time, currentFlow, totalFlow, djikstraMap, opens);
-    }
-
-    private int searchBestWithElephant(Valve start, int time, int currentFlow, int totalFlow,
-            Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens) {
-        Set<Valve> tempOpens = new HashSet<>(opens);
-        if (time >= 26) {
-            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
-            return totalFlow;
-        }
-        if (start.flow > 0) {
-            totalFlow += currentFlow;
-            currentFlow += start.flow;
-            time++;
-            tempOpens.add(start);
-        }
-        if (time >= 26) {
-            possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow));
-            return totalFlow;
-        }
-
-        DijkstraAlgorithm dji = djikstraMap.get(start.id);
-        int max = totalFlow;
-        int found = 0;
-        for (Valve valve : valves) {
-
-            if (valve != start && !tempOpens.contains(valve) && valve.flow > 0) {
-                found++;
-                LinkedList<Vertex> path = dji.getPath(nodesMap.get(valve.id));
-                int travelTime = path.size() - 1;
-
-                int addFlow;
-                int addTime;
-                int result;
-                if (26 - time < travelTime) {
-                    addFlow = (26 - time) * currentFlow;
-                    result = totalFlow + addFlow;
-                    possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), result));
-                } else {
-                    addFlow = travelTime * currentFlow;
-                    addTime = travelTime;
-                    result = searchBestWithElephant(valve, time + addTime, currentFlow, totalFlow + addFlow,
-                            djikstraMap, tempOpens);
-                }
-
-                if (result > max) {
-                    max = result;
-                }
-            }
-        }
-        possibleSolution.add(new PossibleSolution(new HashSet<>(tempOpens), totalFlow + (26 - time) * currentFlow));
-        if (found > 0) {
-            return max;
-        } else {
-            return totalFlow + (26 - time) * currentFlow;
-        }
     }
 
     private int findBestResultBasedOnPossibleSolution() {
@@ -251,9 +191,9 @@ public class ProboscideaVolcanium extends Puzzle {
 
     @Override
     public Object getAnswer1() {
+        possibleSolution = new ArrayList<>();
         Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
         Valve start = getValveById("AA");
-
         return searchBest(djikstraMap, start, 30);
     }
 
@@ -262,7 +202,7 @@ public class ProboscideaVolcanium extends Puzzle {
         possibleSolution = new ArrayList<>();
         Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
         Valve start = getValveById("AA");
-        searchBestWithElephant(djikstraMap, start);
+        searchBest(djikstraMap, start, 26);
         return findBestResultBasedOnPossibleSolution();
     }
 
