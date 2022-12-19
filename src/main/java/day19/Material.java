@@ -42,4 +42,22 @@ public class Material {
     }
 
 
+    public int get(MaterialEnum material) {
+        switch (material) {
+            case ORE: {
+                return ore;
+            }
+            case CLAY: {
+                return clay;
+            }
+            case OBSIDIAN: {
+                return obsidian;
+            }
+            case GEODE: {
+                return geode;
+            }
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + material);
+        }
+    }
 }

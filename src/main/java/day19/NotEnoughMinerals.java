@@ -44,7 +44,9 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
     private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
-        // System.out.println(blueprint);
+
+        Material maxCost = blueprint.getMaximals();
+
         List<State> states = new ArrayList<>();
         states.add(new State(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0)));
 
@@ -54,22 +56,26 @@ public class NotEnoughMinerals extends Puzzle {
 
                 // state.currentMaterial.add(robotCount);
                 // Reciepe reciepe = b.oreRobot;
-                processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates);
-                processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates);
-                processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates);
-                processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates);
+                processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates, maxCost);
+                processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates, maxCost);
+                processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates, maxCost);
+                processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates, maxCost);
 
                 state.currentMaterial.add(state.robotCount);
             }
             states.addAll(newStates);
-            // System.out.println("hello");
+            System.out.println("time: " + i);
         }
 
         int max = 0;
         for (State state : states) {
             max = Math.max(max, state.currentMaterial().geode);
         }
-        System.out.println(max);
+
+
+        states.clear();
+        System.out.println("max: " + max);
+
         return max;
     }
 
@@ -78,8 +84,9 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
     private void processReciepe(final Reciepe reciepe, final Material robotCount, final Material currentMaterial,
-            final List<State> states) {
-        if (reciepe.isPossible(currentMaterial) && !reciepe.isWaiting(currentMaterial, robotCount)) {
+            final List<State> states, Material maxCost) {
+        if ((reciepe.type == MaterialEnum.GEODE || robotCount.get(reciepe.type) < maxCost.get(reciepe.type))
+                && reciepe.isPossible(currentMaterial) && !reciepe.isWaiting(currentMaterial, robotCount)) {
 
             // System.out.println(reciepe.type);
 
