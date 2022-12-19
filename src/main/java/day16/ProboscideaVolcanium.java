@@ -27,7 +27,7 @@ public class ProboscideaVolcanium extends Puzzle {
     Graph graph;
     Map<String, Vertex> nodesMap = new HashMap<>();
 
-    List<PossibleSolution> possibleSolution = new ArrayList<>();
+    List<PossibleSolution> possibleSolution;
 
     protected ProboscideaVolcanium(final String input) throws IOException {
         super(input);
@@ -86,19 +86,19 @@ public class ProboscideaVolcanium extends Puzzle {
         return djikstraMap;
     }
 
-    private int searchBest(Map<String, DijkstraAlgorithm> djikstraMap, Valve start) {
+    private int searchBest(Map<String, DijkstraAlgorithm> djikstraMap, Valve start, int timeMax) {
         int time = 0;
         int currentFlow = 0;
         int totalFlow = 0;
         Set<Valve> opens = new HashSet<>();
 
-        return searchBest(start, time, currentFlow, totalFlow, djikstraMap, opens);
+        return searchBest(start, time, currentFlow, totalFlow, djikstraMap, opens, timeMax);
     }
 
     private int searchBest(Valve start, int time, int currentFlow, int totalFlow,
-            Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens) {
+            Map<String, DijkstraAlgorithm> djikstraMap, Set<Valve> opens, int timeMax) {
         Set<Valve> tempOpens = new HashSet<>(opens);
-        if (time >= 30) {
+        if (time >= timeMax) {
             return totalFlow;
         }
         if (start.flow > 0) {
@@ -107,7 +107,7 @@ public class ProboscideaVolcanium extends Puzzle {
             time++;
             tempOpens.add(start);
         }
-        if (time >= 30) {
+        if (time >= timeMax) {
             return totalFlow;
         }
 
@@ -124,14 +124,14 @@ public class ProboscideaVolcanium extends Puzzle {
                 int addFlow;
                 int addTime;
                 int result;
-                if (30 - time < travelTime) {
-                    addFlow = (30 - time) * currentFlow;
+                if (timeMax - time < travelTime) {
+                    addFlow = (timeMax - time) * currentFlow;
                     result = totalFlow + addFlow;
                 } else {
                     addFlow = travelTime * currentFlow;
                     addTime = travelTime;
-                    result = searchBest(valve, time + addTime, currentFlow, totalFlow + addFlow, djikstraMap,
-                            tempOpens);
+                    result = searchBest(valve, time + addTime, currentFlow, totalFlow + addFlow, djikstraMap, tempOpens,
+                            timeMax);
                 }
 
                 if (result > max) {
@@ -142,7 +142,7 @@ public class ProboscideaVolcanium extends Puzzle {
         if (found > 0) {
             return max;
         } else {
-            return totalFlow + (30 - time) * currentFlow;
+            return totalFlow + (timeMax - time) * currentFlow;
         }
     }
 
@@ -226,7 +226,7 @@ public class ProboscideaVolcanium extends Puzzle {
             for (int j = i + 1; j <= possibleSolution.size() - 1; j++) {
                 Set<Valve> opens1 = possibleSolution.get(i).opens;
                 Set<Valve> opens2 = possibleSolution.get(j).opens;
-    
+
                 if (areDistinct(opens1, opens2)) {
                     int total1 = possibleSolution.get(i).totalFlow;
                     int total2 = possibleSolution.get(j).totalFlow;
@@ -254,16 +254,16 @@ public class ProboscideaVolcanium extends Puzzle {
         Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
         Valve start = getValveById("AA");
 
-        return searchBest(djikstraMap, start);
+        return searchBest(djikstraMap, start, 30);
     }
 
     @Override
     public Object getAnswer2() {
+        possibleSolution = new ArrayList<>();
         Map<String, DijkstraAlgorithm> djikstraMap = generateDjikstraForAllNode();
         Valve start = getValveById("AA");
         searchBestWithElephant(djikstraMap, start);
-        int res = findBestResultBasedOnPossibleSolution();
-        return res;
+        return findBestResultBasedOnPossibleSolution();
     }
 
     public static void main(final String[] args) throws IOException {
