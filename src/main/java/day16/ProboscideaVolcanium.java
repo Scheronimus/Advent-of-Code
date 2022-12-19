@@ -211,5 +211,4 @@ public class ProboscideaVolcanium extends Puzzle {
         System.out.println("Answer1: " + proboscideaVolcanium.getAnswer1());
         System.out.println("Answer2: " + proboscideaVolcanium.getAnswer2());
     }
-
 }
