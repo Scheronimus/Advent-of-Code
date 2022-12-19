@@ -43,26 +43,7 @@ public class NotEnoughMinerals extends Puzzle {
     public record State(Material robotCount, Material currentMaterial) {
     }
 
-    @Override
-    public Object getAnswer1() {
-
-        // Material robotCount = new Material(1, 0, 0, 0);
-        // Material currentMaterial = new Material(0, 0, 0, 0);
-        int solution = 0;
-
-        // Blueprint b = null;
-        int maxTime = 24;
-        int index = 1;
-        for (Blueprint blueprint : blueprints) {
-            int max = getMaxGeode(blueprint, maxTime);
-            solution += getQualityLevel(index, max);
-            index++;
-        }
-
-        return solution;
-    }
-
-    private int getMaxGeode(Blueprint blueprint, int maxTime) {
+    private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
         List<State> states = new ArrayList<>();
         states.add(new State(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0)));
 
@@ -110,9 +91,32 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
     @Override
+    public Object getAnswer1() {
+        int solution = 0;
+        int maxTime = 24;
+        int index = 1;
+        for (Blueprint blueprint : blueprints) {
+            int max = getMaxGeode(blueprint, maxTime);
+            solution += getQualityLevel(index, max);
+            index++;
+        }
+        return solution;
+    }
+
+    @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        int solution = 1;
+        int maxTime = 32;
+        int index = 1;
+        for (Blueprint blueprint : blueprints) {
+            int max = getMaxGeode(blueprint, maxTime);
+            solution *= getQualityLevel(index, max);
+            index++;
+            if (index >= 3) {
+                break;
+            }
+        }
+        return solution;
     }
 
     public static void main(final String[] args) throws IOException {
