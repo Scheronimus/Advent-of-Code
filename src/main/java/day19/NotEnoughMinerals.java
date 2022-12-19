@@ -46,43 +46,48 @@ public class NotEnoughMinerals extends Puzzle {
     @Override
     public Object getAnswer1() {
 
-        Material robotCount = new Material(1, 0, 0, 0);
-        Material currentMaterial = new Material(0, 0, 0, 0);
+        // Material robotCount = new Material(1, 0, 0, 0);
+        // Material currentMaterial = new Material(0, 0, 0, 0);
         int solution = 0;
 
         // Blueprint b = null;
         int maxTime = 24;
         int index = 1;
         for (Blueprint blueprint : blueprints) {
-            List<State> states = new ArrayList<>();
-            states.add(new State(new Material(robotCount), new Material(currentMaterial)));
-
-            for (int i = 1; i <= maxTime; i++) {
-                List<State> newStates = new ArrayList<>();
-                for (State state : states) {
-
-                    // state.currentMaterial.add(robotCount);
-                    // Reciepe reciepe = b.oreRobot;
-                    processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates);
-                    processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates);
-                    processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates);
-                    processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates);
-
-                    state.currentMaterial.add(state.robotCount);
-                }
-                states.addAll(newStates);
-                // System.out.println("hello");
-            }
-
-            int max = 0;
-            for (State state : states) {
-                max = Math.max(max, state.currentMaterial().geode);
-            }
+            int max = getMaxGeode(blueprint, maxTime);
             solution += getQualityLevel(index, max);
             index++;
         }
 
         return solution;
+    }
+
+    private int getMaxGeode(Blueprint blueprint, int maxTime) {
+        List<State> states = new ArrayList<>();
+        states.add(new State(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0)));
+
+        for (int i = 1; i <= maxTime; i++) {
+            List<State> newStates = new ArrayList<>();
+            for (State state : states) {
+
+                // state.currentMaterial.add(robotCount);
+                // Reciepe reciepe = b.oreRobot;
+                processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates);
+                processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates);
+                processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates);
+                processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates);
+
+                state.currentMaterial.add(state.robotCount);
+            }
+            states.addAll(newStates);
+            // System.out.println("hello");
+        }
+
+        int max = 0;
+        for (State state : states) {
+            max = Math.max(max, state.currentMaterial().geode);
+        }
+        return max;
     }
 
     private int getQualityLevel(final int index, final int maxGeode) {
