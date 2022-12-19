@@ -44,6 +44,7 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
     private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
+        // System.out.println(blueprint);
         List<State> states = new ArrayList<>();
         states.add(new State(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0)));
 
@@ -68,6 +69,7 @@ public class NotEnoughMinerals extends Puzzle {
         for (State state : states) {
             max = Math.max(max, state.currentMaterial().geode);
         }
+        System.out.println(max);
         return max;
     }
 
@@ -110,9 +112,9 @@ public class NotEnoughMinerals extends Puzzle {
         int index = 1;
         for (Blueprint blueprint : blueprints) {
             int max = getMaxGeode(blueprint, maxTime);
-            solution *= getQualityLevel(index, max);
+            solution *= max;
             index++;
-            if (index >= 3) {
+            if (index > 3) {
                 break;
             }
         }
