@@ -250,8 +250,8 @@ public class ProboscideaVolcanium extends Puzzle {
                     res = Math.max(res, total1 + total2);
                 }
             }
-            if (i % 50000 == 0) {
-                System.out.println(i + "/" + possibleSolution.size());
+            if (i % 100 == 0) {
+                System.out.println(i + "/" + possibleSolution.size() + " current max:" + res);
             }
         }
         return res;
