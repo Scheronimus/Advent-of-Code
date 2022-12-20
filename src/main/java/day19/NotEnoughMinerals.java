@@ -52,21 +52,27 @@ public class NotEnoughMinerals extends Puzzle {
 
         for (int i = 1; i <= maxTime; i++) {
             List<State> newStates = new ArrayList<>();
+
+
             for (State state : states) {
+                if (i < maxTime) {
+                    // state.currentMaterial.add(robotCount);
+                    // Reciepe reciepe = b.oreRobot;
+                    int timeLeft = maxTime - i;
+                    if (i < maxTime - 1) {
 
-                // state.currentMaterial.add(robotCount);
-                // Reciepe reciepe = b.oreRobot;
-                int timeLeft = maxTime - i;
-                processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                        timeLeft);
-                processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                        timeLeft);
-                processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                        timeLeft);
-                processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                        timeLeft);
-
+                        processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
+                                timeLeft);
+                        processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
+                                timeLeft);
+                        processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates,
+                                maxCost, timeLeft);
+                    }
+                    processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
+                            timeLeft);
+                }
                 state.currentMaterial.add(state.robotCount);
+
             }
             states.addAll(newStates);
             System.out.println("time: " + i);

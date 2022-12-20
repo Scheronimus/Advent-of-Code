@@ -42,7 +42,7 @@ public class Material {
     }
 
 
-    public int get(MaterialEnum material) {
+    public int get(final MaterialEnum material) {
         switch (material) {
             case ORE: {
                 return ore;

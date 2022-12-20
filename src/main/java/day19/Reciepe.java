@@ -40,14 +40,14 @@ public class Reciepe {
     public boolean isWaiting(final Material material, final Material robotCount) {
         switch (type) {
             case ORE: {
-                return material.ore - robotCount.ore >= this.cost.ore;
+                return material.ore - robotCount.ore >= this.cost.ore + 1;
             }
             case CLAY: {
                 return material.ore - robotCount.ore >= this.cost.ore;
+
             }
             case OBSIDIAN: {
-                return material.ore - robotCount.ore >= this.cost.ore
-                        && material.clay - robotCount.clay >= this.cost.clay;
+                return false;
             }
             case GEODE: {
                 return false;
