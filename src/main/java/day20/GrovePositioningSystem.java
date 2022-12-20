@@ -65,26 +65,36 @@ public class GrovePositioningSystem extends Puzzle {
         int index = workingCopy.indexOf(value);
 
         if (value.val >= 0) {
-            workingCopy.set(index, MAX);
+            workingCopy.remove(value);
+            // workingCopy.set(index, MAX);
 
-            int b1 = (index + value.val) % encryptedFile.size();
-            int b2 = (index + value.val + 1) % encryptedFile.size();
-
+            int b1 = (index + value.val - 1) % (encryptedFile.size() - 1);
+            int b2 = (index + value.val) % (encryptedFile.size() - 1);
+            if (b2 == 0) {
+                b2 = encryptedFile.size() - 1;
+            }
             System.out.println(b1 + " " + b2);
-            workingCopy.add((index + value.val + 1) % encryptedFile.size(), value);
-            workingCopy.remove(MAX);
+            workingCopy.add(b2, value);
+            // workingCopy.remove(MAX);
 
 
         } else {
-            workingCopy.set(index, MAX);
+
             Collections.reverse(workingCopy);
             int absval = Math.abs(value.val);
             int reverseIndex = workingCopy.size() - index - 1;
-            int newIndex = (reverseIndex + absval + 1) % workingCopy.size();
+            workingCopy.remove(value);
+            int b1 = (reverseIndex + absval - 1) % (encryptedFile.size() - 1);
+            int b2 = (reverseIndex + absval) % (encryptedFile.size() - 1);
+            if (b2 == 0) {
+                b2 = encryptedFile.size() - 1;
+            }
+            System.out.println(b1 + " " + b2);
 
-            workingCopy.add(newIndex, value);
+
+            workingCopy.add(b2, value);
             Collections.reverse(workingCopy);
-            workingCopy.remove(MAX);
+
         }
         System.out.println(workingCopy);
         return workingCopy;

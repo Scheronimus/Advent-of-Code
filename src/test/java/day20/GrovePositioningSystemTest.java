@@ -50,7 +50,7 @@ public class GrovePositioningSystemTest extends PuzzleUnitTest {
 
     @Test
     public void testProcessValue3() {
-        List<Value> file = toList(4, -2, 5, 6, 7, 8, 6);
+        List<Value> file = toList(4, -2, 5, 6, 7, 8, 7);
         List<Value> res = ((GrovePositioningSystem)puzzle).processValue(file.get(6), file);
         List<Value> expected = toList(4, 5, 6, 7, 8, -2, 6);
         Assertions.assertEquals(expected, res);
