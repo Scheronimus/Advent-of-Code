@@ -15,15 +15,6 @@ import helper.Puzzle;
 public class GrovePositioningSystem extends Puzzle {
     List<Value> encryptedFile = new ArrayList<>();
 
-    public record Value(int val) {
-
-        @Override
-        public String toString() {
-            return "" + val;
-        }
-
-    }
-
 
     protected GrovePositioningSystem(String input) throws IOException {
         super(input);
@@ -75,6 +66,11 @@ public class GrovePositioningSystem extends Puzzle {
 
         if (value.val >= 0) {
             workingCopy.set(index, MAX);
+
+            int b1 = (index + value.val) % encryptedFile.size();
+            int b2 = (index + value.val + 1) % encryptedFile.size();
+
+            System.out.println(b1 + " " + b2);
             workingCopy.add((index + value.val + 1) % encryptedFile.size(), value);
             workingCopy.remove(MAX);
 

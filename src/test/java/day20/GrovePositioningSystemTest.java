@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import day20.GrovePositioningSystem.Value;
 import testhelper.PuzzleUnitTest;
 
 public class GrovePositioningSystemTest extends PuzzleUnitTest {
@@ -51,9 +50,9 @@ public class GrovePositioningSystemTest extends PuzzleUnitTest {
 
     @Test
     public void testProcessValue3() {
-        List<Value> file = toList(4, -2, 5, 6, 7, 8, 9);
-        List<Value> res = ((GrovePositioningSystem)puzzle).processValue(file.get(1), file);
-        List<Value> expected = toList(4, 5, 6, 7, 8, -2, 9);
+        List<Value> file = toList(4, -2, 5, 6, 7, 8, 6);
+        List<Value> res = ((GrovePositioningSystem)puzzle).processValue(file.get(6), file);
+        List<Value> expected = toList(4, 5, 6, 7, 8, -2, 6);
         Assertions.assertEquals(expected, res);
     }
 
