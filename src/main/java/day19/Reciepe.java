@@ -34,24 +34,23 @@ public class Reciepe {
 
     public boolean isPossible(final Material material) {
         return material.clay - this.cost.clay >= 0 && material.ore - this.cost.ore >= 0
-                && material.obsidian - this.cost.obsidian >= 0 && material.geode - this.cost.geode >= 0;
+                && material.obsidian - this.cost.obsidian >= 0;
     }
 
     public boolean isWaiting(final Material material, final Material robotCount) {
         switch (type) {
             case ORE: {
-                return material.ore - this.cost.ore > robotCount.ore - 1;
+                return material.ore - robotCount.ore >= this.cost.ore;
             }
             case CLAY: {
-                return material.ore - this.cost.ore > robotCount.ore - 1;
+                return material.ore - robotCount.ore >= this.cost.ore;
             }
             case OBSIDIAN: {
-                return material.ore - this.cost.ore > robotCount.ore - 1
-                        && material.clay - this.cost.clay > robotCount.clay - 1;
+                return material.ore - robotCount.ore >= this.cost.ore
+                        && material.clay - robotCount.clay >= this.cost.clay;
             }
             case GEODE: {
-                return material.ore - this.cost.ore > robotCount.ore - 1
-                        && material.obsidian - this.cost.obsidian > robotCount.obsidian - 1;
+                return false;
             }
             default:
                 throw new IllegalArgumentException("Unexpected value: " + type);
