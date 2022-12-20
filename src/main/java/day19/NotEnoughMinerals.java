@@ -40,9 +40,6 @@ public class NotEnoughMinerals extends Puzzle {
         }
     }
 
-    public record State(Material robotCount, Material currentMaterial) {
-    }
-
     private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
 
         Material maxCost = blueprint.getMaximals();
@@ -61,15 +58,15 @@ public class NotEnoughMinerals extends Puzzle {
                     int timeLeft = maxTime - i;
                     if (i < maxTime - 1) {
 
-                        processReciepe(blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                                timeLeft);
-                        processReciepe(blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                                timeLeft);
-                        processReciepe(blueprint.obsidianRobot, state.robotCount, state.currentMaterial, newStates,
+                        processReciepe(state, blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates,
                                 maxCost, timeLeft);
+                        processReciepe(state, blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates,
+                                maxCost, timeLeft);
+                        processReciepe(state, blueprint.obsidianRobot, state.robotCount, state.currentMaterial,
+                                newStates, maxCost, timeLeft);
                     }
-                    processReciepe(blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates, maxCost,
-                            timeLeft);
+                    processReciepe(state, blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates,
+                            maxCost, timeLeft);
                 }
                 state.currentMaterial.add(state.robotCount);
 
@@ -80,7 +77,7 @@ public class NotEnoughMinerals extends Puzzle {
 
         int max = 0;
         for (State state : states) {
-            max = Math.max(max, state.currentMaterial().geode);
+            max = Math.max(max, state.currentMaterial.geode);
 
         }
 
@@ -95,11 +92,13 @@ public class NotEnoughMinerals extends Puzzle {
         return index * maxGeode;
     }
 
-    private void processReciepe(final Reciepe reciepe, final Material robotCount, final Material currentMaterial,
-            final List<State> states, final Material maxCost, final int timeLeft) {
-        if (check(reciepe.type, robotCount, currentMaterial, maxCost, timeLeft)
+    private void processReciepe(final State state, final Reciepe reciepe, final Material robotCount,
+            final Material currentMaterial, final List<State> states, final Material maxCost, final int timeLeft) {
+
+
+        if (!state.skipped.contains(reciepe.type) && check(reciepe.type, robotCount, currentMaterial, maxCost, timeLeft)
                 && (reciepe.type == MaterialEnum.GEODE || robotCount.get(reciepe.type) < maxCost.get(reciepe.type))
-                && reciepe.isPossible(currentMaterial) && !reciepe.isWaiting(currentMaterial, robotCount)) {
+                && reciepe.isPossible(currentMaterial)) {
 
             // System.out.println(reciepe.type);
             Material newRobotCount = new Material(robotCount);
@@ -108,6 +107,10 @@ public class NotEnoughMinerals extends Puzzle {
             newCurrentMaterial.add(robotCount);
             newCurrentMaterial.remove(reciepe.cost);
             states.add(new State(newRobotCount, newCurrentMaterial));
+        }
+
+        if (reciepe.isPossible(currentMaterial)) {
+            state.skipped.add(reciepe.type);
         }
     }
 
