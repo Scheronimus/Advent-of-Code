@@ -72,7 +72,7 @@ public class NotEnoughMinerals extends Puzzle {
 
             }
             states.addAll(newStates);
-            System.out.println("time: " + i);
+            // System.out.println("time: " + i);
         }
 
         int max = 0;
@@ -151,7 +151,7 @@ public class NotEnoughMinerals extends Puzzle {
 
     public static void main(final String[] args) throws IOException {
         NotEnoughMinerals notEnoughMinerals = new NotEnoughMinerals("day19/input");
-        // System.out.println("Answer1: " + notEnoughMinerals.getAnswer1());
+        System.out.println("Answer1: " + notEnoughMinerals.getAnswer1());
         System.out.println("Answer2: " + notEnoughMinerals.getAnswer2());
     }
 
