@@ -1,5 +1,7 @@
 package day21;
 
+import java.util.List;
+
 public class Monkey {
     String id;
     Long value = null;
@@ -27,6 +29,30 @@ public class Monkey {
         }
 
         return toString;
+    }
+
+    public long computeValue(final List<Monkey> monkeys) {
+        if (value != null) {
+            return value;
+        } else {
+
+            long calculated = operation.run(findMonkeyById(operation.idLeft, monkeys).computeValue(monkeys),
+                    findMonkeyById(operation.idRight, monkeys).computeValue(monkeys));
+            value = calculated;
+            return value;
+        }
+
+    }
+
+    public static Monkey findMonkeyById(final String id, final List<Monkey> monkeys) {
+        Monkey find = null;
+        for (Monkey monkey : monkeys) {
+            if (monkey.id.equals(id)) {
+                find = monkey;
+                break;
+            }
+        }
+        return find;
     }
 
 

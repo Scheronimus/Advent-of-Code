@@ -71,11 +71,20 @@ public class MonkeyMath extends Puzzle {
 
     @Override
     public Object getAnswer1() {
+        // printMonkey();
+
+        Monkey root = Monkey.findMonkeyById("root", monkeys);
+        // System.out.println(root);
+        long res = root.computeValue(monkeys);
+        return res;
+    }
+
+    private void printMonkey() {
         for (Monkey monkey : monkeys) {
             System.out.println(monkey);
         }
-        return null;
     }
+
 
     @Override
     public Object getAnswer2() {
