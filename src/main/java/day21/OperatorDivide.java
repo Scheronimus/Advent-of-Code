@@ -4,11 +4,11 @@ public class OperatorDivide implements IOperator {
 
 
     @Override
-    public long run(final Long left, final Long right) {
-        if (right == 0) {
-            throw new IllegalArgumentException("Division by 0 not allowed");
+    public Polynomial run(final Polynomial left, final Polynomial right) {
+        if (right.getDegree() > 0) {
+            throw new IllegalArgumentException("Division by polynome of degree 1 or more is not supported");
         }
-        return left / right;
+        return left.divideBy(right.getCoef(0));
     }
 
     @Override

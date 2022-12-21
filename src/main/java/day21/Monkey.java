@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Monkey {
     String id;
-    Long value = null;
+    Polynomial value = null;
     Operation operation = null;
 
-    public Monkey(final String id, final Long value) {
+    public Monkey(final String id, final Polynomial value) {
         super();
         this.id = id;
         this.value = value;
@@ -38,12 +38,12 @@ public class Monkey {
         return toString;
     }
 
-    public long computeValue(final List<Monkey> monkeys) {
+    public Polynomial computeValue(final List<Monkey> monkeys) {
         if (value != null) {
             return value;
         } else {
 
-            long calculated = operation.run(findMonkeyById(operation.idLeft, monkeys).computeValue(monkeys),
+            Polynomial calculated = operation.run(findMonkeyById(operation.idLeft, monkeys).computeValue(monkeys),
                     findMonkeyById(operation.idRight, monkeys).computeValue(monkeys));
             value = calculated;
             return value;

@@ -37,7 +37,7 @@ public class MonkeyMath extends Puzzle {
 
                     Monkey m;
                     if (value != null) {
-                        m = new Monkey(id, Long.parseLong(value));
+                        m = new Monkey(id, new Polynomial(Integer.parseInt(value), 0));
                     } else {
                         IOperator op;
                         switch (operator) {
@@ -71,15 +71,12 @@ public class MonkeyMath extends Puzzle {
 
     @Override
     public Object getAnswer1() {
-        // printMonkey();
-
         Monkey root = Monkey.findMonkeyById("root", monkeys);
-        // System.out.println(root);
-        long res = root.computeValue(monkeys);
-        return res;
+        Polynomial res = root.computeValue(monkeys);
+        return (long)res.getCoef(0);
     }
 
-    private void printMonkey() {
+    private void printMonkeys() {
         for (Monkey monkey : monkeys) {
             System.out.println(monkey);
         }
@@ -88,29 +85,22 @@ public class MonkeyMath extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        Long res = 0L;
-        boolean notFound = true;
-        // printMonkey();
-        while (notFound) {
-            List<Monkey> clone = clone(monkeys);
 
-            Monkey root = Monkey.findMonkeyById("root", clone);
-            Monkey humn = Monkey.findMonkeyById("humn", clone);
-            humn.value = res;
-            // System.out.println(root);
-            Monkey left = Monkey.findMonkeyById(root.operation.idLeft, clone);
-            Monkey right = Monkey.findMonkeyById(root.operation.idRight, clone);
+        Monkey root = Monkey.findMonkeyById("root", monkeys);
+        Monkey humn = Monkey.findMonkeyById("humn", monkeys);
 
-            if (left.computeValue(clone) == right.computeValue(clone)) {
-                notFound = false;
-            } else {
-                res++;
-            }
-            clone.clear();
+        humn.value = new Polynomial(1, 1);
 
-        }
-        return res;
+        Monkey left = Monkey.findMonkeyById(root.operation.idLeft, monkeys);
+        Monkey right = Monkey.findMonkeyById(root.operation.idRight, monkeys);
+        Polynomial resL = left.computeValue(monkeys);
+        Polynomial resR = right.computeValue(monkeys);
+
+        Polynomial equalZero = resL.minus(resR);
+
+        return (long)(-equalZero.getCoef(0) / equalZero.getCoef(1));
     }
+
 
     List<Monkey> clone(final List<Monkey> original) {
         List<Monkey> clone = new ArrayList<>();
@@ -124,6 +114,7 @@ public class MonkeyMath extends Puzzle {
     public static void main(final String[] args) throws IOException {
         MonkeyMath monkeyMath = new MonkeyMath("day21/input");
         System.out.println("Answer1: " + monkeyMath.getAnswer1());
+        monkeyMath = new MonkeyMath("day21/input");
         System.out.println("Answer2: " + monkeyMath.getAnswer2());
     }
 }

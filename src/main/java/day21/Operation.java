@@ -14,7 +14,7 @@ public class Operation {
     }
 
 
-    public long run(final long left, final long right) {
+    public Polynomial run(final Polynomial left, final Polynomial right) {
         return operator.run(left, right);
     }
 

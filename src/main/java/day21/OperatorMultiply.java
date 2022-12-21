@@ -3,9 +3,9 @@ package day21;
 public class OperatorMultiply implements IOperator {
 
     @Override
-    public long run(final Long left, final Long right) {
+    public Polynomial run(final Polynomial left, final Polynomial right) {
 
-        return left * right;
+        return left.times(right);
     }
 
     @Override
