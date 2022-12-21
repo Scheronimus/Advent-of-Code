@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import day21.operator.IOperator;
+import day21.operator.OperatorDivide;
+import day21.operator.OperatorMinus;
+import day21.operator.OperatorMultiply;
+import day21.operator.OperatorPlus;
+import helper.Polynomial;
 import helper.Puzzle;
 
 public class MonkeyMath extends Puzzle {

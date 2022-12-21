@@ -2,6 +2,8 @@ package day21;
 
 import java.util.List;
 
+import helper.Polynomial;
+
 public class Monkey {
     String id;
     Polynomial value = null;

@@ -1,4 +1,6 @@
-package day21;
+package day21.operator;
+
+import helper.Polynomial;
 
 public class OperatorMultiply implements IOperator {
 

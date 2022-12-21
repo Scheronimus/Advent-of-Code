@@ -1,5 +1,8 @@
 package day21;
 
+import day21.operator.IOperator;
+import helper.Polynomial;
+
 public class Operation {
     String idLeft;
     String idRight;
