@@ -1,10 +1,10 @@
 package day20;
 
 public class Value {
-    int val;
+    long val;
 
 
-    public Value(int val) {
+    public Value(long val) {
         super();
         this.val = val;
     }

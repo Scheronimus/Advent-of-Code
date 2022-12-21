@@ -14,7 +14,7 @@ import helper.Puzzle;
 
 public class GrovePositioningSystem extends Puzzle {
     List<Value> encryptedFile = new ArrayList<>();
-
+    List<Value> encryptedFile2 = new ArrayList<>();
 
     protected GrovePositioningSystem(String input) throws IOException {
         super(input);
@@ -24,17 +24,14 @@ public class GrovePositioningSystem extends Puzzle {
 
             while ((line = br.readLine()) != null) {
                 encryptedFile.add(new Value(Integer.parseInt(line.trim())));
+                encryptedFile2.add(new Value(Integer.parseInt(line.trim()) * 811589153L));
             }
         }
     }
 
     @Override
     public Object getAnswer1() {
-
-        System.out.println(encryptedFile);
         List<Value> workingCopy = decrypt(encryptedFile);
-
-
         Value zero = null;
         for (Value val : workingCopy) {
             if (val.val == 0) {
@@ -42,18 +39,23 @@ public class GrovePositioningSystem extends Puzzle {
             }
         }
         int index0 = workingCopy.indexOf(zero);
-        Integer val1 = workingCopy.get((index0 + 1000) % workingCopy.size()).val;
-        Integer val2 = workingCopy.get((index0 + 2000) % workingCopy.size()).val;
-        Integer val3 = workingCopy.get((index0 + 3000) % workingCopy.size()).val;
-        return val1 + val2 + val3;
+        long val1 = workingCopy.get((index0 + 1000) % workingCopy.size()).val;
+        long val2 = workingCopy.get((index0 + 2000) % workingCopy.size()).val;
+        long val3 = workingCopy.get((index0 + 3000) % workingCopy.size()).val;
+        return (int)(val1 + val2 + val3);
     }
 
     public List<Value> decrypt(List<Value> encryptedFile) {
         List<Value> workingCopy = new ArrayList<>(encryptedFile);
 
+
+        return decrypt(encryptedFile, workingCopy);
+    }
+
+    public List<Value> decrypt(List<Value> encryptedFile, List<Value> workingCopy) {
+
         for (Value val : encryptedFile) {
             processValue(val, workingCopy);
-
         }
         return workingCopy;
     }
@@ -66,45 +68,46 @@ public class GrovePositioningSystem extends Puzzle {
 
         if (value.val >= 0) {
             workingCopy.remove(value);
-            // workingCopy.set(index, MAX);
-
-            int b1 = (index + value.val - 1) % (encryptedFile.size() - 1);
-            int b2 = (index + value.val) % (encryptedFile.size() - 1);
+            long b2 = (index + value.val) % (encryptedFile.size() - 1);
             if (b2 == 0) {
                 b2 = encryptedFile.size() - 1;
             }
-            System.out.println(b1 + " " + b2);
-            workingCopy.add(b2, value);
-            // workingCopy.remove(MAX);
-
-
+            workingCopy.add((int)b2, value);
         } else {
 
             Collections.reverse(workingCopy);
-            int absval = Math.abs(value.val);
+            long absval = Math.abs(value.val);
             int reverseIndex = workingCopy.size() - index - 1;
             workingCopy.remove(value);
-            int b1 = (reverseIndex + absval - 1) % (encryptedFile.size() - 1);
-            int b2 = (reverseIndex + absval) % (encryptedFile.size() - 1);
+
+            long b2 = (reverseIndex + absval) % (encryptedFile.size() - 1);
             if (b2 == 0) {
                 b2 = encryptedFile.size() - 1;
             }
-            System.out.println(b1 + " " + b2);
-
-
-            workingCopy.add(b2, value);
+            workingCopy.add((int)b2, value);
             Collections.reverse(workingCopy);
-
         }
-        System.out.println(workingCopy);
         return workingCopy;
-
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Value> workingCopy = decrypt(encryptedFile2);
+        for (int i = 0; i < 9; i++) {
+            workingCopy = decrypt(encryptedFile2, workingCopy);
+        }
+
+        Value zero = null;
+        for (Value val : workingCopy) {
+            if (val.val == 0) {
+                zero = val;
+            }
+        }
+        int index0 = workingCopy.indexOf(zero);
+        long val1 = workingCopy.get((index0 + 1000) % workingCopy.size()).val;
+        long val2 = workingCopy.get((index0 + 2000) % workingCopy.size()).val;
+        long val3 = workingCopy.get((index0 + 3000) % workingCopy.size()).val;
+        return val1 + val2 + val3;
     }
 
     public static void main(final String[] args) throws IOException {

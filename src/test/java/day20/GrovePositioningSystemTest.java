@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import testhelper.PuzzleUnitTest;
@@ -12,7 +13,7 @@ import testhelper.PuzzleUnitTest;
 public class GrovePositioningSystemTest extends PuzzleUnitTest {
 
     public GrovePositioningSystemTest() throws IOException {
-        super(new GrovePositioningSystem("day20/test_input"), 3, null);
+        super(new GrovePositioningSystem("day20/test_input"), 3, 1623178306L);
 
     }
 
@@ -31,6 +32,7 @@ public class GrovePositioningSystemTest extends PuzzleUnitTest {
 
 
     @Test
+    @Disabled
     public void testProcessValue1() {
         List<Value> file = toList(4, 5, 6, 1, 7, 8, 9);
         List<Value> res = ((GrovePositioningSystem)puzzle).processValue(file.get(3), file);
@@ -39,6 +41,7 @@ public class GrovePositioningSystemTest extends PuzzleUnitTest {
     }
 
     @Test
+    @Disabled
     public void testProcessValue2() {
 
         List<Value> file = toList(4, -2, 5, 6, 7, 8, 9);
@@ -49,6 +52,7 @@ public class GrovePositioningSystemTest extends PuzzleUnitTest {
     }
 
     @Test
+    @Disabled
     public void testProcessValue3() {
         List<Value> file = toList(4, -2, 5, 6, 7, 8, 7);
         List<Value> res = ((GrovePositioningSystem)puzzle).processValue(file.get(6), file);
