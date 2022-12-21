@@ -40,6 +40,121 @@ public class NotEnoughMinerals extends Puzzle {
         }
     }
 
+
+    private int getMaxGeodeNew(final Blueprint blueprint, final int maxTime) {
+        int maxGeode = 0;
+        Material maxCost = blueprint.getMaximals();
+
+        List<State2> states = new ArrayList<>();
+        states.add(new State2(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0), 0));
+
+        boolean ongoing = true;
+        while (!states.isEmpty()) {
+            List<State2> newStates = new ArrayList<>();
+            for (State2 state : states) {
+                // List<State2> newStates = new ArrayList<>();
+                createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+                createClayRobot(state, maxCost, blueprint, newStates, maxTime);
+                // state.currentMaterial.add(state.robotCount);
+                idle(state, maxTime);
+
+            }
+            states.addAll(newStates);
+            System.out.println("Hello");
+            List<State2> toRemove = new ArrayList<>();
+            for (State2 state : states) {
+                if (state.time >= maxTime) {
+                    maxGeode = Math.max(maxGeode, state.currentMaterial.geode);
+                    toRemove.add(state);
+                }
+            }
+            states.removeAll(toRemove);
+
+
+        }
+
+
+        return 0;
+    }
+
+
+    private void idle(State2 state, final int maxTime) {
+        int idleTime = (maxTime - state.time);
+        state.currentMaterial.add(state.robotCount.multiplyBy(idleTime));
+        state.time = maxTime;
+    }
+
+
+    private void createOreRobot(State2 state, Material maxCost, final Blueprint blueprint, List<State2> states,
+            int maxTime) {
+        if (state.robotCount.ore > 0 && state.robotCount.ore < maxCost.ore) {
+            Material newRobotCount = new Material(state.robotCount);
+            Material newCurrentMaterial = new Material(state.currentMaterial);
+            int newTime = state.time;
+
+            if ((state.currentMaterial.ore - blueprint.oreRobot.cost.ore) >= 0) {
+                newCurrentMaterial.add(newRobotCount);
+                newCurrentMaterial.remove(blueprint.oreRobot.cost);
+                newTime++;
+
+            } else {
+                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.oreRobot.cost.ore);
+                int numberOfCycle = missingOre / state.robotCount.ore;
+                if ((missingOre % state.robotCount.ore) > 0) {
+                    numberOfCycle++;
+                }
+
+                int timeRemaining = maxTime - newTime;
+                if (numberOfCycle >= timeRemaining) {
+                    return; // this is the idling case.
+                }
+                newTime += numberOfCycle + 1;
+
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.remove(blueprint.oreRobot.cost);
+            }
+            newRobotCount.add(blueprint.oreRobot.created());
+
+            State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            states.add(newState);
+        }
+    }
+
+    private void createClayRobot(State2 state, Material maxCost, final Blueprint blueprint, List<State2> states,
+            int maxTime) {
+        if (state.robotCount.ore > 0 && state.robotCount.clay < maxCost.clay) {
+            Material newRobotCount = new Material(state.robotCount);
+            Material newCurrentMaterial = new Material(state.currentMaterial);
+            int newTime = state.time;
+
+            if ((state.currentMaterial.ore - blueprint.oreRobot.cost.ore) >= 0) {
+                newCurrentMaterial.add(newRobotCount);
+                newCurrentMaterial.remove(blueprint.clayRobot.cost);
+                newTime++;
+
+            } else {
+                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.oreRobot.cost.ore);
+                int numberOfCycle = missingOre / state.robotCount.ore;
+                if ((missingOre % state.robotCount.ore) > 0) {
+                    numberOfCycle++;
+                }
+
+                int timeRemaining = maxTime - newTime;
+                if (numberOfCycle > timeRemaining) {
+                    return; // this is the idling case.
+                }
+
+                newTime += numberOfCycle + 1;
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.remove(blueprint.clayRobot.cost);
+            }
+            newRobotCount.add(blueprint.clayRobot.created());
+
+            State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            states.add(newState);
+        }
+    }
+
     private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
 
         Material maxCost = blueprint.getMaximals();
@@ -126,7 +241,7 @@ public class NotEnoughMinerals extends Puzzle {
         int maxTime = 24;
         int index = 1;
         for (Blueprint blueprint : blueprints) {
-            int max = getMaxGeode(blueprint, maxTime);
+            int max = getMaxGeodeNew(blueprint, maxTime);
             solution += getQualityLevel(index, max);
             index++;
         }

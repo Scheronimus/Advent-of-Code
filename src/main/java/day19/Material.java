@@ -22,6 +22,10 @@ public class Material {
         this.geode = m.geode;
     }
 
+    public Material multiplyBy(int i) {
+        return new Material(ore * i, clay * i, obsidian * i, geode * i);
+    }
+
     @Override
     public String toString() {
         return "Material [ore=" + ore + ", clay=" + clay + ", obsidian=" + obsidian + ", geode=" + geode + "]";
