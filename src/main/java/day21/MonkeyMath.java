@@ -88,8 +88,37 @@ public class MonkeyMath extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        Long res = 0L;
+        boolean notFound = true;
+        // printMonkey();
+        while (notFound) {
+            List<Monkey> clone = clone(monkeys);
+
+            Monkey root = Monkey.findMonkeyById("root", clone);
+            Monkey humn = Monkey.findMonkeyById("humn", clone);
+            humn.value = res;
+            // System.out.println(root);
+            Monkey left = Monkey.findMonkeyById(root.operation.idLeft, clone);
+            Monkey right = Monkey.findMonkeyById(root.operation.idRight, clone);
+
+            if (left.computeValue(clone) == right.computeValue(clone)) {
+                notFound = false;
+            } else {
+                res++;
+            }
+            clone.clear();
+
+        }
+        return res;
+    }
+
+    List<Monkey> clone(final List<Monkey> original) {
+        List<Monkey> clone = new ArrayList<>();
+        for (Monkey monkey : original) {
+            clone.add(new Monkey(monkey));
+        }
+        return clone;
+
     }
 
     public static void main(final String[] args) throws IOException {

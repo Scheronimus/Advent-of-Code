@@ -7,7 +7,7 @@ import testhelper.PuzzleUnitTest;
 public class MonkeyMathTest extends PuzzleUnitTest {
 
     public MonkeyMathTest() throws IOException {
-        super(new MonkeyMath("day21/test_input"), 152L, null);
+        super(new MonkeyMath("day21/test_input"), 152L, 301L);
     }
 
 }

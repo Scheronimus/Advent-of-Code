@@ -19,6 +19,13 @@ public class Monkey {
         this.operation = operation;
     }
 
+    public Monkey(final Monkey m) {
+        super();
+        this.id = m.id;
+        this.value = m.value;
+        this.operation = m.operation;
+    }
+
     @Override
     public String toString() {
         String toString = id + ": ";
