@@ -55,12 +55,14 @@ public class NotEnoughMinerals extends Puzzle {
                 // List<State2> newStates = new ArrayList<>();
                 createOreRobot(state, maxCost, blueprint, newStates, maxTime);
                 createClayRobot(state, maxCost, blueprint, newStates, maxTime);
+                createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
+                createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
                 // state.currentMaterial.add(state.robotCount);
                 idle(state, maxTime);
 
             }
             states.addAll(newStates);
-            System.out.println("Hello");
+
             List<State2> toRemove = new ArrayList<>();
             for (State2 state : states) {
                 if (state.time >= maxTime) {
@@ -69,12 +71,12 @@ public class NotEnoughMinerals extends Puzzle {
                 }
             }
             states.removeAll(toRemove);
-
+            System.out.println("Hello");
 
         }
 
 
-        return 0;
+        return maxGeode;
     }
 
 
@@ -82,6 +84,7 @@ public class NotEnoughMinerals extends Puzzle {
         int idleTime = (maxTime - state.time);
         state.currentMaterial.add(state.robotCount.multiplyBy(idleTime));
         state.time = maxTime;
+
     }
 
 
@@ -91,6 +94,7 @@ public class NotEnoughMinerals extends Puzzle {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
             int newTime = state.time;
+
 
             if ((state.currentMaterial.ore - blueprint.oreRobot.cost.ore) >= 0) {
                 newCurrentMaterial.add(newRobotCount);
@@ -105,10 +109,11 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle >= timeRemaining) {
+                if (numberOfCycle + 1 >= timeRemaining) {
                     return; // this is the idling case.
                 }
                 newTime += numberOfCycle + 1;
+
 
                 newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
                 newCurrentMaterial.remove(blueprint.oreRobot.cost);
@@ -140,7 +145,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle > timeRemaining) {
+                if (numberOfCycle + 1 > timeRemaining) {
                     return; // this is the idling case.
                 }
 
@@ -155,79 +160,100 @@ public class NotEnoughMinerals extends Puzzle {
         }
     }
 
-    private int getMaxGeode(final Blueprint blueprint, final int maxTime) {
 
-        Material maxCost = blueprint.getMaximals();
+    private void createObsidianRobot(State2 state, Material maxCost, final Blueprint blueprint, List<State2> states,
+            int maxTime) {
+        if (state.robotCount.clay > 0 && state.robotCount.obsidian < maxCost.obsidian) {
+            Material newRobotCount = new Material(state.robotCount);
+            Material newCurrentMaterial = new Material(state.currentMaterial);
+            int newTime = state.time;
 
-        List<State> states = new ArrayList<>();
-        states.add(new State(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0)));
+            if ((state.currentMaterial.ore - blueprint.obsidianRobot.cost.ore) >= 0
+                    && (state.currentMaterial.clay - blueprint.obsidianRobot.cost.clay) >= 0) {
+                newCurrentMaterial.add(newRobotCount);
+                newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
+                newTime++;
 
-        for (int i = 1; i <= maxTime; i++) {
-            List<State> newStates = new ArrayList<>();
-
-
-            for (State state : states) {
-                if (i < maxTime) {
-                    // state.currentMaterial.add(robotCount);
-                    // Reciepe reciepe = b.oreRobot;
-                    int timeLeft = maxTime - i;
-                    if (i < maxTime - 1) {
-
-                        processReciepe(state, blueprint.oreRobot, state.robotCount, state.currentMaterial, newStates,
-                                maxCost, timeLeft);
-                        processReciepe(state, blueprint.clayRobot, state.robotCount, state.currentMaterial, newStates,
-                                maxCost, timeLeft);
-                        processReciepe(state, blueprint.obsidianRobot, state.robotCount, state.currentMaterial,
-                                newStates, maxCost, timeLeft);
-                    }
-                    processReciepe(state, blueprint.geodeRobot, state.robotCount, state.currentMaterial, newStates,
-                            maxCost, timeLeft);
+            } else {
+                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.obsidianRobot.cost.ore);
+                int missingClay = Math.abs(state.currentMaterial.clay - blueprint.obsidianRobot.cost.clay);
+                int numberOfCycleOre = missingOre / state.robotCount.ore;
+                if ((missingOre % state.robotCount.ore) > 0) {
+                    numberOfCycleOre++;
                 }
-                state.currentMaterial.add(state.robotCount);
 
+                int numberOfCycleClay = missingClay / state.robotCount.clay;
+                if ((missingOre % state.robotCount.clay) > 0) {
+                    numberOfCycleClay++;
+                }
+
+                int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleClay);
+
+                int timeRemaining = maxTime - newTime;
+                if (numberOfCycle + 1 > timeRemaining) {
+                    return; // this is the idling case.
+                }
+
+                newTime += numberOfCycle + 1;
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
             }
-            states.addAll(newStates);
-            // System.out.println("time: " + i);
+            newRobotCount.add(blueprint.obsidianRobot.created());
+
+            State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            states.add(newState);
         }
-
-        int max = 0;
-        for (State state : states) {
-            max = Math.max(max, state.currentMaterial.geode);
-
-        }
-
-
-        states.clear();
-        System.out.println("max: " + max);
-
-        return max;
     }
+
+    private void createGeodeRobot(State2 state, Material maxCost, final Blueprint blueprint, List<State2> states,
+            int maxTime) {
+        if (state.robotCount.obsidian > 0) {
+            Material newRobotCount = new Material(state.robotCount);
+            Material newCurrentMaterial = new Material(state.currentMaterial);
+            int newTime = state.time;
+
+            if ((state.currentMaterial.ore - blueprint.geodeRobot.cost.ore) >= 0
+                    && (state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian) >= 0) {
+                newCurrentMaterial.add(newRobotCount);
+                newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
+                newTime++;
+
+            } else {
+                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.geodeRobot.cost.ore);
+                int missingObsidian = Math.abs(state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian);
+                int numberOfCycleOre = missingOre / state.robotCount.ore;
+                if ((missingOre % state.robotCount.ore) > 0) {
+                    numberOfCycleOre++;
+                }
+
+                int numberOfCycleClay = missingObsidian / state.robotCount.obsidian;
+                if ((missingOre % state.robotCount.obsidian) > 0) {
+                    numberOfCycleClay++;
+                }
+
+                int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleClay);
+
+                int timeRemaining = maxTime - newTime;
+                if (numberOfCycle + 1 > timeRemaining) {
+                    return; // this is the idling case.
+                }
+
+                newTime += numberOfCycle + 1;
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.remove(blueprint.geodeRobot.cost);
+            }
+            newRobotCount.add(blueprint.geodeRobot.created());
+
+            State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            states.add(newState);
+        }
+    }
+
 
     private int getQualityLevel(final int index, final int maxGeode) {
         return index * maxGeode;
     }
 
-    private void processReciepe(final State state, final Reciepe reciepe, final Material robotCount,
-            final Material currentMaterial, final List<State> states, final Material maxCost, final int timeLeft) {
-
-
-        if (!state.skipped.contains(reciepe.type) && check(reciepe.type, robotCount, currentMaterial, maxCost, timeLeft)
-                && (reciepe.type == MaterialEnum.GEODE || robotCount.get(reciepe.type) < maxCost.get(reciepe.type))
-                && reciepe.isPossible(currentMaterial)) {
-
-            // System.out.println(reciepe.type);
-            Material newRobotCount = new Material(robotCount);
-            newRobotCount.add(reciepe.created());
-            Material newCurrentMaterial = new Material(currentMaterial);
-            newCurrentMaterial.add(robotCount);
-            newCurrentMaterial.remove(reciepe.cost);
-            states.add(new State(newRobotCount, newCurrentMaterial));
-        }
-
-        if (reciepe.isPossible(currentMaterial)) {
-            state.skipped.add(reciepe.type);
-        }
-    }
 
     boolean check(final MaterialEnum type, final Material robotCount, final Material currentMaterial,
             final Material maxCost, final int timeLeft) {
@@ -254,7 +280,7 @@ public class NotEnoughMinerals extends Puzzle {
         int maxTime = 32;
         int index = 1;
         for (Blueprint blueprint : blueprints) {
-            int max = getMaxGeode(blueprint, maxTime);
+            int max = getMaxGeodeNew(blueprint, maxTime);
             solution *= max;
             index++;
             if (index > 3) {
