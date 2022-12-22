@@ -76,10 +76,14 @@ public class NotEnoughMinerals extends Puzzle {
 
     void pocessState(State2 state, final Blueprint blueprint, Material maxCost, final int maxTime,
             List<State2> newStates) {
-        createOreRobot(state, maxCost, blueprint, newStates, maxTime);
-        createClayRobot(state, maxCost, blueprint, newStates, maxTime);
-        createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
-        createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
+        if (state.time < maxTime - 1) {
+            if (state.time < maxTime - 2) {
+                createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+                createClayRobot(state, maxCost, blueprint, newStates, maxTime);
+                createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
+            }
+            createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
+        }
         idle(state, maxTime);
     }
 
