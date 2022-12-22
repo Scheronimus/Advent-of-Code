@@ -75,7 +75,7 @@ public class NotEnoughMinerals extends Puzzle {
 
         }
 
-
+        System.out.println("max: " + maxGeode);
         return maxGeode;
     }
 
@@ -108,6 +108,7 @@ public class NotEnoughMinerals extends Puzzle {
                     numberOfCycle++;
                 }
 
+
                 int timeRemaining = maxTime - newTime;
                 if (numberOfCycle + 1 >= timeRemaining) {
                     return; // this is the idling case.
@@ -115,7 +116,7 @@ public class NotEnoughMinerals extends Puzzle {
                 newTime += numberOfCycle + 1;
 
 
-                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.oreRobot.cost);
             }
             newRobotCount.add(blueprint.oreRobot.created());
@@ -132,13 +133,13 @@ public class NotEnoughMinerals extends Puzzle {
             Material newCurrentMaterial = new Material(state.currentMaterial);
             int newTime = state.time;
 
-            if ((state.currentMaterial.ore - blueprint.oreRobot.cost.ore) >= 0) {
+            if ((state.currentMaterial.ore - blueprint.clayRobot.cost.ore) >= 0) {
                 newCurrentMaterial.add(newRobotCount);
                 newCurrentMaterial.remove(blueprint.clayRobot.cost);
                 newTime++;
 
             } else {
-                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.oreRobot.cost.ore);
+                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.clayRobot.cost.ore);
                 int numberOfCycle = missingOre / state.robotCount.ore;
                 if ((missingOre % state.robotCount.ore) > 0) {
                     numberOfCycle++;
@@ -150,7 +151,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 newTime += numberOfCycle + 1;
-                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.clayRobot.cost);
             }
             newRobotCount.add(blueprint.clayRobot.created());
@@ -195,7 +196,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 newTime += numberOfCycle + 1;
-                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
             }
             newRobotCount.add(blueprint.obsidianRobot.created());
@@ -239,7 +240,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 newTime += numberOfCycle + 1;
-                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle));
+                newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.geodeRobot.cost);
             }
             newRobotCount.add(blueprint.geodeRobot.created());
