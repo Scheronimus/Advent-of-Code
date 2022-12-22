@@ -48,17 +48,11 @@ public class NotEnoughMinerals extends Puzzle {
         List<State2> states = new ArrayList<>();
         states.add(new State2(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0), 0));
 
-        boolean ongoing = true;
+
         while (!states.isEmpty()) {
             List<State2> newStates = new ArrayList<>();
             for (State2 state : states) {
-                // List<State2> newStates = new ArrayList<>();
-                createOreRobot(state, maxCost, blueprint, newStates, maxTime);
-                createClayRobot(state, maxCost, blueprint, newStates, maxTime);
-                createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
-                createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
-                // state.currentMaterial.add(state.robotCount);
-                idle(state, maxTime);
+                pocessState(state, blueprint, maxCost, maxTime, newStates);
 
             }
             states.addAll(newStates);
@@ -77,6 +71,16 @@ public class NotEnoughMinerals extends Puzzle {
 
         System.out.println("max: " + maxGeode);
         return maxGeode;
+    }
+
+
+    void pocessState(State2 state, final Blueprint blueprint, Material maxCost, final int maxTime,
+            List<State2> newStates) {
+        createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+        createClayRobot(state, maxCost, blueprint, newStates, maxTime);
+        createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
+        createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
+        idle(state, maxTime);
     }
 
 
@@ -216,7 +220,7 @@ public class NotEnoughMinerals extends Puzzle {
             if ((state.currentMaterial.ore - blueprint.geodeRobot.cost.ore) >= 0
                     && (state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian) >= 0) {
                 newCurrentMaterial.add(newRobotCount);
-                newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
+                newCurrentMaterial.remove(blueprint.geodeRobot.cost);
                 newTime++;
 
             } else {
