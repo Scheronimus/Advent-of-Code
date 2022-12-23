@@ -82,9 +82,9 @@ public class NotEnoughMinerals extends Puzzle {
         if (state.time < maxTime - 1) {
             if (state.time < maxTime - 2) {
                 if (state.time < maxTime - 3) {
-                    createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+                    createClayRobot(state, maxCost, blueprint, newStates, maxTime);
                 }
-                createClayRobot(state, maxCost, blueprint, newStates, maxTime);
+                createOreRobot(state, maxCost, blueprint, newStates, maxTime);
                 createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
             }
             createGeodeRobot(state, maxCost, blueprint, newStates, maxTime);
@@ -102,7 +102,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createOreRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (check(MaterialEnum.ORE, state.robotCount, state.currentMaterial, maxCost, maxTime)
+        if (state.currentMaterial.ore <= (maxCost.ore) * (maxTime - state.time)
+                && check(MaterialEnum.ORE, state.robotCount, state.currentMaterial, maxCost, maxTime)
                 && state.robotCount.ore > 0 && state.robotCount.ore < maxCost.ore) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
@@ -123,7 +124,7 @@ public class NotEnoughMinerals extends Puzzle {
 
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 >= timeRemaining - 3) {
+                if (numberOfCycle + 1 >= timeRemaining - 2) {
                     return; // this is the idling case.
                 }
                 newTime += numberOfCycle + 1;
@@ -139,7 +140,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createClayRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (check(MaterialEnum.CLAY, state.robotCount, state.currentMaterial, maxCost, maxTime)
+        if (state.currentMaterial.clay <= (maxCost.clay) * (maxTime - state.time)
+                && check(MaterialEnum.CLAY, state.robotCount, state.currentMaterial, maxCost, maxTime)
                 && state.robotCount.ore > 0 && state.robotCount.clay < maxCost.clay) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
@@ -158,7 +160,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 > timeRemaining - 2) {
+                if (numberOfCycle + 1 > timeRemaining - 3) {
                     return; // this is the idling case.
                 }
 
@@ -177,7 +179,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createObsidianRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (check(MaterialEnum.OBSIDIAN, state.robotCount, state.currentMaterial, maxCost, maxTime)
+        if (state.currentMaterial.obsidian <= (maxCost.obsidian) * (maxTime - state.time)
+                && check(MaterialEnum.OBSIDIAN, state.robotCount, state.currentMaterial, maxCost, maxTime)
                 && state.robotCount.clay > 0 && state.robotCount.obsidian < maxCost.obsidian) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
