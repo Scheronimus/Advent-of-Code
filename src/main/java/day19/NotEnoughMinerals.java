@@ -48,26 +48,33 @@ public class NotEnoughMinerals extends Puzzle {
         List<State2> states = new ArrayList<>();
         states.add(new State2(new Material(1, 0, 0, 0), new Material(0, 0, 0, 0), 0));
 
+        boolean ongoing = true;
+        while (ongoing) {
 
-        while (!states.isEmpty()) {
+            boolean allFinished = true;
+
             List<State2> newStates = new ArrayList<>();
             for (State2 state : states) {
-                pocessState(state, blueprint, maxCost, maxTime, newStates);
+                if (state.time != maxTime) {
+                    pocessState(state, blueprint, maxCost, maxTime, newStates);
+                    allFinished = false;
+                }
 
             }
             states.addAll(newStates);
-
-            List<State2> toRemove = new ArrayList<>();
-            for (State2 state : states) {
-                if (state.time >= maxTime) {
-                    maxGeode = Math.max(maxGeode, state.currentMaterial.geode);
-                    toRemove.add(state);
-                }
-            }
-            states.removeAll(toRemove);
-            System.out.println("Hello");
-
+            ongoing = !allFinished;
         }
+
+        for (State2 state : states) {
+            if (state.time >= maxTime) {
+                if (state.currentMaterial.geode == 11) {
+                    // System.out.println("meh");
+                }
+                maxGeode = Math.max(maxGeode, state.currentMaterial.geode);
+
+            }
+        }
+
 
         System.out.println("max: " + maxGeode);
         return maxGeode;
@@ -92,7 +99,6 @@ public class NotEnoughMinerals extends Puzzle {
         int idleTime = (maxTime - state.time);
         state.currentMaterial.add(state.robotCount.multiplyBy(idleTime));
         state.time = maxTime;
-
     }
 
 
@@ -128,8 +134,9 @@ public class NotEnoughMinerals extends Puzzle {
                 newCurrentMaterial.remove(blueprint.oreRobot.cost);
             }
             newRobotCount.add(blueprint.oreRobot.created());
-
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            // newState.previousState.addAll(state.previousState);
+            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }
@@ -165,6 +172,8 @@ public class NotEnoughMinerals extends Puzzle {
             newRobotCount.add(blueprint.clayRobot.created());
 
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            // newState.previousState.addAll(state.previousState);
+            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }
@@ -184,17 +193,24 @@ public class NotEnoughMinerals extends Puzzle {
                 newTime++;
 
             } else {
-                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.obsidianRobot.cost.ore);
-                int missingClay = Math.abs(state.currentMaterial.clay - blueprint.obsidianRobot.cost.clay);
+                int missingOre = 0;
+                if ((state.currentMaterial.ore - blueprint.obsidianRobot.cost.ore) < 0) {
+                    missingOre = Math.abs(state.currentMaterial.ore - blueprint.obsidianRobot.cost.ore);
+                }
                 int numberOfCycleOre = missingOre / state.robotCount.ore;
                 if ((missingOre % state.robotCount.ore) > 0) {
                     numberOfCycleOre++;
                 }
 
+                int missingClay = 0;
+                if ((state.currentMaterial.clay - blueprint.obsidianRobot.cost.clay) < 0) {
+                    missingClay = Math.abs(state.currentMaterial.clay - blueprint.obsidianRobot.cost.clay);
+                }
                 int numberOfCycleClay = missingClay / state.robotCount.clay;
-                if ((missingOre % state.robotCount.clay) > 0) {
+                if ((missingClay % state.robotCount.clay) > 0) {
                     numberOfCycleClay++;
                 }
+
 
                 int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleClay);
 
@@ -206,10 +222,14 @@ public class NotEnoughMinerals extends Puzzle {
                 newTime += numberOfCycle + 1;
                 newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.obsidianRobot.cost);
+
+
             }
             newRobotCount.add(blueprint.obsidianRobot.created());
 
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            // newState.previousState.addAll(state.previousState);
+            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }
@@ -228,19 +248,27 @@ public class NotEnoughMinerals extends Puzzle {
                 newTime++;
 
             } else {
-                int missingOre = Math.abs(state.currentMaterial.ore - blueprint.geodeRobot.cost.ore);
-                int missingObsidian = Math.abs(state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian);
+                int missingOre = 0;
+                if ((state.currentMaterial.ore - blueprint.geodeRobot.cost.ore) < 0) {
+                    missingOre = Math.abs(state.currentMaterial.ore - blueprint.geodeRobot.cost.ore);
+                }
+
+                int missingObsidian = 0;
+                if ((state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian) < 0) {
+                    missingObsidian = Math.abs(state.currentMaterial.obsidian - blueprint.geodeRobot.cost.obsidian);
+                }
+
                 int numberOfCycleOre = missingOre / state.robotCount.ore;
                 if ((missingOre % state.robotCount.ore) > 0) {
                     numberOfCycleOre++;
                 }
 
-                int numberOfCycleClay = missingObsidian / state.robotCount.obsidian;
-                if ((missingOre % state.robotCount.obsidian) > 0) {
-                    numberOfCycleClay++;
+                int numberOfCycleOsidian = missingObsidian / state.robotCount.obsidian;
+                if ((missingObsidian % state.robotCount.obsidian) > 0) {
+                    numberOfCycleOsidian++;
                 }
 
-                int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleClay);
+                int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleOsidian);
 
                 int timeRemaining = maxTime - newTime;
                 if (numberOfCycle + 1 > timeRemaining) {
@@ -250,10 +278,14 @@ public class NotEnoughMinerals extends Puzzle {
                 newTime += numberOfCycle + 1;
                 newCurrentMaterial.add(newRobotCount.multiplyBy(numberOfCycle + 1));
                 newCurrentMaterial.remove(blueprint.geodeRobot.cost);
+
+
             }
             newRobotCount.add(blueprint.geodeRobot.created());
 
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
+            // newState.previousState.addAll(state.previousState);
+            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }
