@@ -67,9 +67,6 @@ public class NotEnoughMinerals extends Puzzle {
 
         for (State2 state : states) {
             if (state.time >= maxTime) {
-                if (state.currentMaterial.geode == 11) {
-                    // System.out.println("meh");
-                }
                 maxGeode = Math.max(maxGeode, state.currentMaterial.geode);
 
             }
@@ -135,8 +132,6 @@ public class NotEnoughMinerals extends Puzzle {
             }
             newRobotCount.add(blueprint.oreRobot.created());
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
-            // newState.previousState.addAll(state.previousState);
-            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }
@@ -228,8 +223,7 @@ public class NotEnoughMinerals extends Puzzle {
             newRobotCount.add(blueprint.obsidianRobot.created());
 
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
-            // newState.previousState.addAll(state.previousState);
-            // newState.previousState.add(new State2(state));
+
             states.add(newState);
         }
     }
@@ -284,8 +278,6 @@ public class NotEnoughMinerals extends Puzzle {
             newRobotCount.add(blueprint.geodeRobot.created());
 
             State2 newState = new State2(newRobotCount, newCurrentMaterial, newTime);
-            // newState.previousState.addAll(state.previousState);
-            // newState.previousState.add(new State2(state));
             states.add(newState);
         }
     }

@@ -29,7 +29,7 @@ public class Blueprint {
 
         List<Reciepe> reciepes = new ArrayList<>();
 
-        reciepes.add(oreRobot);
+        // reciepes.add(oreRobot);
         reciepes.add(clayRobot);
         reciepes.add(obsidianRobot);
         reciepes.add(geodeRobot);
