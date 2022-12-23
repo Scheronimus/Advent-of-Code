@@ -140,7 +140,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createClayRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (state.currentMaterial.clay <= (maxCost.clay) * (maxTime - state.time)
+        if (state.robotCount.obsidian < maxCost.obsidian
+                && state.currentMaterial.clay <= (maxCost.clay) * (maxTime - state.time)
                 && check(MaterialEnum.CLAY, state.robotCount, state.currentMaterial, maxCost, maxTime)
                 && state.robotCount.ore > 0 && state.robotCount.clay < maxCost.clay) {
             Material newRobotCount = new Material(state.robotCount);
