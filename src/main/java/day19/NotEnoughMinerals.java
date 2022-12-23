@@ -121,7 +121,7 @@ public class NotEnoughMinerals extends Puzzle {
 
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 >= timeRemaining) {
+                if (numberOfCycle + 1 >= timeRemaining - 2) {
                     return; // this is the idling case.
                 }
                 newTime += numberOfCycle + 1;
@@ -156,7 +156,7 @@ public class NotEnoughMinerals extends Puzzle {
                 }
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 > timeRemaining) {
+                if (numberOfCycle + 1 > timeRemaining - 2) {
                     return; // this is the idling case.
                 }
 
@@ -167,8 +167,7 @@ public class NotEnoughMinerals extends Puzzle {
             newRobotCount.add(blueprint.clayRobot.created());
 
             State newState = new State(newRobotCount, newCurrentMaterial, newTime);
-            // newState.previousState.addAll(state.previousState);
-            // newState.previousState.add(new State2(state));
+
             states.add(newState);
         }
     }
@@ -211,7 +210,7 @@ public class NotEnoughMinerals extends Puzzle {
                 int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleClay);
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 > timeRemaining) {
+                if (numberOfCycle + 1 > timeRemaining - 2) {
                     return; // this is the idling case.
                 }
 
@@ -266,7 +265,7 @@ public class NotEnoughMinerals extends Puzzle {
                 int numberOfCycle = Math.max(numberOfCycleOre, numberOfCycleOsidian);
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 > timeRemaining) {
+                if (numberOfCycle + 1 > timeRemaining - 1) {
                     return; // this is the idling case.
                 }
 
