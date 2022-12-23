@@ -108,9 +108,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createOreRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (state.currentMaterial.ore <= (maxCost.ore) * (maxTime - state.time)
-                && check(MaterialEnum.ORE, state.robotCount, state.currentMaterial, maxCost, maxTime)
-                && state.robotCount.ore > 0 && state.robotCount.ore < maxCost.ore) {
+        if (state.currentMaterial.ore <= (maxCost.ore) * (maxTime - state.time) && state.robotCount.ore > 0
+                && state.robotCount.ore < maxCost.ore) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
             int newTime = state.time;
@@ -147,9 +146,8 @@ public class NotEnoughMinerals extends Puzzle {
     private void createClayRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
         if (state.robotCount.obsidian < maxCost.obsidian
-                && state.currentMaterial.clay <= (maxCost.clay) * (maxTime - state.time)
-                && check(MaterialEnum.CLAY, state.robotCount, state.currentMaterial, maxCost, maxTime)
-                && state.robotCount.ore > 0 && state.robotCount.clay < maxCost.clay) {
+                && state.currentMaterial.clay <= (maxCost.clay) * (maxTime - state.time) && state.robotCount.ore > 0
+                && state.robotCount.clay < maxCost.clay) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
             int newTime = state.time;
@@ -186,9 +184,8 @@ public class NotEnoughMinerals extends Puzzle {
 
     private void createObsidianRobot(State state, Material maxCost, final Blueprint blueprint, List<State> states,
             int maxTime) {
-        if (state.currentMaterial.obsidian <= (maxCost.obsidian) * (maxTime - state.time)
-                && check(MaterialEnum.OBSIDIAN, state.robotCount, state.currentMaterial, maxCost, maxTime)
-                && state.robotCount.clay > 0 && state.robotCount.obsidian < maxCost.obsidian) {
+        if (state.currentMaterial.obsidian <= (maxCost.obsidian) * (maxTime - state.time) && state.robotCount.clay > 0
+                && state.robotCount.obsidian < maxCost.obsidian) {
             Material newRobotCount = new Material(state.robotCount);
             Material newCurrentMaterial = new Material(state.currentMaterial);
             int newTime = state.time;
@@ -300,12 +297,6 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
 
-    boolean check(final MaterialEnum type, final Material robotCount, final Material currentMaterial,
-            final Material maxCost, final int timeLeft) {
-        return !(type != MaterialEnum.GEODE
-                && robotCount.get(type) * timeLeft + currentMaterial.get(type) >= timeLeft * maxCost.get(type));
-    }
-
     @Override
     public Object getAnswer1() {
         int solution = 0;
@@ -342,10 +333,9 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
     public int maxGeodePossibleInBestCase(int currentGeode, int currentGeodeRobot, int timeRemaining) {
-
+        // Current geode + Arithmetic sum of geode Robot
+        // e.g for input (1,2,3) : 1 + (2+3+4)
         return currentGeode + (timeRemaining + 1) * (2 * currentGeodeRobot + timeRemaining) / 2;
-
-
     }
 
 }
