@@ -2,6 +2,10 @@ package day19;
 
 public class Reciepe {
 
+    private static final Material GEODE_ROBOT = new Material(0, 0, 0, 1);
+    private static final Material OBSIDIAN_ROBOT = new Material(0, 0, 1, 0);
+    private static final Material CLAY_ROBOT = new Material(0, 1, 0, 0);
+    private static final Material ORE_ROBOT = new Material(1, 0, 0, 0);
     MaterialEnum type;
     Material cost;
 
@@ -60,16 +64,16 @@ public class Reciepe {
     public Material created() {
         switch (type) {
             case ORE: {
-                return new Material(1, 0, 0, 0);
+                return ORE_ROBOT;
             }
             case CLAY: {
-                return new Material(0, 1, 0, 0);
+                return CLAY_ROBOT;
             }
             case OBSIDIAN: {
-                return new Material(0, 0, 1, 0);
+                return OBSIDIAN_ROBOT;
             }
             case GEODE: {
-                return new Material(0, 0, 0, 1);
+                return GEODE_ROBOT;
             }
             default:
                 throw new IllegalArgumentException("Unexpected value: " + type);
