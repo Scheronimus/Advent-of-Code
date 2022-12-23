@@ -1,5 +1,7 @@
 package day09;
 
+import helper.Direction;
+
 public class Motion {
     Direction direction;
     int length;

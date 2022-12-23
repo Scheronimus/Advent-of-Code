@@ -1,4 +1,4 @@
-package day09;
+package helper;
 
 public enum Direction {
     UP,

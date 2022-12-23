@@ -2,6 +2,8 @@ package day09;
 
 import java.util.Objects;
 
+import helper.Direction;
+
 public class Knot {
     int x = 0;
     int y = 0;
