@@ -38,6 +38,13 @@ public class Material {
         geode += material.geode;
     }
 
+    public void addxtime(final Material material, int x) {
+        ore += material.ore * x;
+        clay += material.clay * x;
+        obsidian += material.obsidian * x;
+        geode += material.geode * x;
+    }
+
     public void remove(final Material material) {
         ore -= material.ore;
         clay -= material.clay;
