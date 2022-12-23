@@ -81,7 +81,9 @@ public class NotEnoughMinerals extends Puzzle {
             List<State> newStates) {
         if (state.time < maxTime - 1) {
             if (state.time < maxTime - 2) {
-                createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+                if (state.time < maxTime - 3) {
+                    createOreRobot(state, maxCost, blueprint, newStates, maxTime);
+                }
                 createClayRobot(state, maxCost, blueprint, newStates, maxTime);
                 createObsidianRobot(state, maxCost, blueprint, newStates, maxTime);
             }
@@ -121,7 +123,7 @@ public class NotEnoughMinerals extends Puzzle {
 
 
                 int timeRemaining = maxTime - newTime;
-                if (numberOfCycle + 1 >= timeRemaining - 2) {
+                if (numberOfCycle + 1 >= timeRemaining - 3) {
                     return; // this is the idling case.
                 }
                 newTime += numberOfCycle + 1;
