@@ -43,6 +43,7 @@ public class NotEnoughMinerals extends Puzzle {
 
     private int getMaxGeodeNew(final Blueprint blueprint, final int maxTime) {
         int maxGeode = 0;
+        Best currentBest = new Best(0);
         Material maxCost = blueprint.getMaximals();
 
         List<State> states = new ArrayList<>();
@@ -56,7 +57,7 @@ public class NotEnoughMinerals extends Puzzle {
             List<State> newStates = new ArrayList<>();
             for (State state : states) {
                 if (state.time != maxTime) {
-                    pocessState(state, blueprint, maxCost, maxTime, newStates);
+                    pocessState(state, blueprint, maxCost, maxTime, newStates, currentBest);
                     allFinished = false;
                 }
 
@@ -77,9 +78,14 @@ public class NotEnoughMinerals extends Puzzle {
     }
 
 
-    void pocessState(State state, final Blueprint blueprint, Material maxCost, final int maxTime,
-            List<State> newStates) {
-        if (state.time < maxTime - 1) {
+    void pocessState(State state, final Blueprint blueprint, Material maxCost, final int maxTime, List<State> newStates,
+            Best currentBest) {
+        currentBest.currentBest = Math.max(currentBest.currentBest,
+                state.currentMaterial.geode + state.robotCount.geode * (maxTime - state.time));
+
+
+        if ((maxGeodePossibleInBestCase(state.currentMaterial.geode, state.robotCount.geode,
+                maxTime - state.time) > currentBest.currentBest) && state.time < maxTime - 1) {
             if (state.time < maxTime - 2) {
                 if (state.time < maxTime - 3) {
                     createClayRobot(state, maxCost, blueprint, newStates, maxTime);
@@ -333,6 +339,13 @@ public class NotEnoughMinerals extends Puzzle {
         NotEnoughMinerals notEnoughMinerals = new NotEnoughMinerals("day19/input");
         System.out.println("Answer1: " + notEnoughMinerals.getAnswer1());
         System.out.println("Answer2: " + notEnoughMinerals.getAnswer2());
+    }
+
+    public int maxGeodePossibleInBestCase(int currentGeode, int currentGeodeRobot, int timeRemaining) {
+
+        return currentGeode + (timeRemaining + 1) * (2 * currentGeodeRobot + timeRemaining) / 2;
+
+
     }
 
 }
