@@ -15,7 +15,7 @@ import helper.Puzzle;
 
 public class MonkeyMap extends Puzzle {
 
-    MapOfTheBoard map = new MapOfTheBoard();
+    MapOfTheBoard map;
     List<Action> actions = new ArrayList<>();
 
     protected MonkeyMap(String input) throws IOException {
@@ -23,11 +23,11 @@ public class MonkeyMap extends Puzzle {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(getInputFile()), StandardCharsets.UTF_8));) {
             String line;
-
+            List<String> values = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
                 if (line.contains(".")) {
-                    map.add(line);
+                    values.add(line);
                 } else if (!line.isEmpty()) {
 
                     Pattern reciepePattern = Pattern.compile("(\\d+)|([RL])");
@@ -45,9 +45,8 @@ public class MonkeyMap extends Puzzle {
                         }
                     }
                 }
-
-
             }
+            map = new MapOfTheBoard(values);
         }
     }
 
