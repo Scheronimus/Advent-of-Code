@@ -8,6 +8,7 @@ public class Blueprint {
     Reciepe clayRobot;
     Reciepe obsidianRobot;
     Reciepe geodeRobot;
+    Material maximals;
 
     public Blueprint(final Reciepe oreRobot, final Reciepe clayRobot, final Reciepe obsidianRobot,
             final Reciepe geodeRobot) {
@@ -16,6 +17,7 @@ public class Blueprint {
         this.clayRobot = clayRobot;
         this.obsidianRobot = obsidianRobot;
         this.geodeRobot = geodeRobot;
+        maximals = calculateMaximals();
     }
 
     @Override
@@ -24,12 +26,10 @@ public class Blueprint {
                 + ", geodeRobot=" + geodeRobot + "]";
     }
 
-    public Material getMaximals() {
+    public Material calculateMaximals() {
         Material max = new Material(0, 0, 0, 0);
 
         List<Reciepe> reciepes = new ArrayList<>();
-
-        // reciepes.add(oreRobot);
         reciepes.add(clayRobot);
         reciepes.add(obsidianRobot);
         reciepes.add(geodeRobot);
@@ -38,10 +38,11 @@ public class Blueprint {
             max.clay = Math.max(max.clay, reciepe.cost.clay);
             max.ore = Math.max(max.ore, reciepe.cost.ore);
             max.obsidian = Math.max(max.obsidian, reciepe.cost.obsidian);
-            max.geode = Math.max(max.geode, reciepe.cost.geode);
         }
         return max;
     }
 
-
+    public Material getMaximals() {
+        return maximals;
+    }
 }
