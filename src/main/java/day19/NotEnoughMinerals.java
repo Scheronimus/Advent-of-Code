@@ -68,12 +68,11 @@ public class NotEnoughMinerals extends Puzzle {
         for (State2 state : states) {
             if (state.time >= maxTime) {
                 maxGeode = Math.max(maxGeode, state.currentMaterial.geode);
-
             }
         }
 
-
         System.out.println("max: " + maxGeode);
+        states.clear();
         return maxGeode;
     }
 
