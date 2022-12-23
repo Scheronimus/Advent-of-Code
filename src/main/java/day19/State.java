@@ -1,22 +1,21 @@
 package day19;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class State {
     Material robotCount;
     Material currentMaterial;
-    Set<MaterialEnum> skipped = new HashSet<>();
+    int time;
 
-    public State(Material robotCount, Material currentMaterial) {
+    public State(Material robotCount, Material currentMaterial, int time) {
         super();
         this.robotCount = robotCount;
         this.currentMaterial = currentMaterial;
+        this.time = time;
     }
 
     @Override
     public String toString() {
-        return "State [robotCount=" + robotCount + ", currentMaterial=" + currentMaterial + ", skipped=" + skipped
-                + "]";
+        return "State2 [robotCount=" + robotCount + ", currentMaterial=" + currentMaterial + ", time=" + time + "]";
     }
+
+
 }

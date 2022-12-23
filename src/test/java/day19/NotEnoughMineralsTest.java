@@ -22,11 +22,11 @@ public class NotEnoughMineralsTest extends PuzzleUnitTest {
         Material robotCount = new Material(1, 4, 2, 2);
         Material currentMaterial = new Material(3, 29, 2, 3);
         int time = 21;
-        State2 state = new State2(robotCount, currentMaterial, time);
+        State state = new State(robotCount, currentMaterial, time);
         Blueprint blueprint = p.blueprints.get(0);
         Material maxCost = blueprint.getMaximals();
         int maxTime = 24;
-        List<State2> newStates = new ArrayList<>();
+        List<State> newStates = new ArrayList<>();
         p.pocessState(state, blueprint, maxCost, maxTime, newStates);
         System.out.println("yop");
 
@@ -40,11 +40,11 @@ public class NotEnoughMineralsTest extends PuzzleUnitTest {
         Material robotCount = new Material(2, 7, 2, 0);
         Material currentMaterial = new Material(3, 13, 3, 0);
         int time = 21;
-        State2 state = new State2(robotCount, currentMaterial, time);
+        State state = new State(robotCount, currentMaterial, time);
         Blueprint blueprint = p.blueprints.get(0);
         Material maxCost = blueprint.getMaximals();
         int maxTime = 24;
-        List<State2> newStates = new ArrayList<>();
+        List<State> newStates = new ArrayList<>();
         p.pocessState(state, blueprint, maxCost, maxTime, newStates);
         System.out.println("yop");
 
