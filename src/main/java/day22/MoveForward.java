@@ -16,7 +16,6 @@ public class MoveForward extends Action {
         int[] valRow = map.rows.get(p.getY());
         int[] valCol = map.columns.get(p.getX());
 
-
         if (p.getDirection() == Direction.RIGHT) {
             int newX = wrapArround(p.getX() + distance, valRow);
             for (int x = p.getX(); x < p.getX() + distance; x++) {
@@ -57,7 +56,7 @@ public class MoveForward extends Action {
             int newY = wrapArround(p.getY() - distance, valCol);
             for (int y = p.getY(); y > p.getY() - distance; y--) {
                 int xWithWrapArround = wrapArround(y, valCol);
-                if (map.get(p.getX(), wrapArround(y + 1, valCol)) == '#') {
+                if (map.get(p.getX(), wrapArround(y - 1, valCol)) == '#') {
                     newY = xWithWrapArround;
                     break;
                 }
