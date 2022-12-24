@@ -33,12 +33,10 @@ public class MoveForward extends Action {
 
     }
 
-    private int wrapArround(int x, int[] val) {
-        // @TODO to fix...
+    int wrapArround(int x, int[] val) {
         int xWithWrapArround = x;
         if (x > val[1]) {
-            xWithWrapArround = x % val[1] + val[0];
-
+            xWithWrapArround = (x - val[0]) % (val[1] - val[0] + 1) + val[0];
         }
         return xWithWrapArround;
     }
