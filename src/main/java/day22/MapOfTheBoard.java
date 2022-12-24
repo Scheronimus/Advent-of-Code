@@ -47,7 +47,7 @@ public class MapOfTheBoard {
             if (dot == -1)
                 dot = values.size();
             int xMin = Math.min(hash, dot);
-            rows.put(y, new int[] { xMin, xMax });
+            rows.put(y, new int[] { xMin + 1, xMax });
             globalXmax = Math.max(globalXmax, xMax);
         }
 

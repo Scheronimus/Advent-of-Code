@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import day06.TuningTrouble;
 import helper.Puzzle;
 
 public class MonkeyMap extends Puzzle {
@@ -50,6 +49,32 @@ public class MonkeyMap extends Puzzle {
         }
     }
 
+    int generateFinalPassword(Position p) {
+        int res = p.getY() * 1000 + p.getX() * 4;
+
+        switch (p.getDirection()) {
+            case UP: {
+                res += 3;
+                break;
+            }
+            case RIGHT: {
+                break;
+            }
+            case DOWN: {
+                res += 1;
+                break;
+            }
+            case LEFT: {
+                res += 2;
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unexpected value: " + p.getDirection());
+        }
+
+        return res;
+    }
+
     @Override
     public Object getAnswer1() {
         Position position = map.getStatingPoint();
@@ -58,7 +83,8 @@ public class MonkeyMap extends Puzzle {
             action.doIt(position, map);
             System.out.println(position);
         }
-        return null;
+
+        return generateFinalPassword(position);
     }
 
     @Override
@@ -68,8 +94,8 @@ public class MonkeyMap extends Puzzle {
     }
 
     public static void main(final String[] args) throws IOException {
-        TuningTrouble tuningTrouble = new TuningTrouble("day22/input");
-        System.out.println("Answer1: " + tuningTrouble.getAnswer1());
-        System.out.println("Answer2: " + tuningTrouble.getAnswer2());
+        MonkeyMap monkeyMap = new MonkeyMap("day22/input");
+        System.out.println("Answer1: " + monkeyMap.getAnswer1());
+        System.out.println("Answer2: " + monkeyMap.getAnswer2());
     }
 }

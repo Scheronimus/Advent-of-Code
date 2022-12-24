@@ -23,4 +23,13 @@ public class MoveForwardTest {
         Assertions.assertEquals(1, res);
     }
 
+    @Test
+    public void testWrapArroundNegative() {
+        MoveForward m = new MoveForward(10);
+        int[] val = new int[] { 1, 5 };
+        int res = m.wrapArround(3 - 6, val);
+
+        Assertions.assertEquals(2, res);
+    }
+
 }
