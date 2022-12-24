@@ -40,7 +40,13 @@ public class MapOfTheBoard {
         for (Integer y = 1; y <= values.size(); y++) {
             String line = values.get(y - 1);
             int xMax = line.length();
-            int xMin = Math.min(line.indexOf('#'), line.indexOf('.'));
+            int hash = line.indexOf('#');
+            int dot = line.indexOf('.');
+            if (hash == -1)
+                hash = values.size();
+            if (dot == -1)
+                dot = values.size();
+            int xMin = Math.min(hash, dot);
             rows.put(y, new int[] { xMin, xMax });
             globalXmax = Math.max(globalXmax, xMax);
         }
