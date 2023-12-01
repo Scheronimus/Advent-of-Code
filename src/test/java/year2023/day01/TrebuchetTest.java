@@ -17,18 +17,18 @@ public class TrebuchetTest extends PuzzleUnitTest {
 
 
     @Test
-    public void testGetCalibartionValue() {
+    public void testGetCalibrationValue() {
         // throw new RuntimeException("not yet implemented");
 
-        int val = Trebuchet.getCalibartionValue("12a599sd36jlou");
+        int val = Trebuchet.getCalibrationValue("12a599sd36jlou");
         assertEquals(16, val);
     }
 
     @Test
-    public void testGetCalibartionValue2() {
+    public void testGetCalibrationValue2() {
         // throw new RuntimeException("not yet implemented");
 
-        int val = Trebuchet.getCalibartionValue2("five92a599sd36jlouonetz");
+        int val = Trebuchet.getCalibrationValue2("five92a599sd36jlouonetz");
         assertEquals(51, val);
     }
 

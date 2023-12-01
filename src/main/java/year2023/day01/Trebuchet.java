@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import helper.Puzzle;
@@ -15,9 +14,9 @@ import helper.Puzzle;
 
 public class Trebuchet extends Puzzle {
 
-    public static String[] numberName = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    protected static String[] numberName = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
     String input;
-    List<String> calibrationString = new ArrayList<>();
+    List<String> calibrationStrings = new ArrayList<>();
 
 
     public Trebuchet(final String input) throws IOException {
@@ -27,23 +26,23 @@ public class Trebuchet extends Puzzle {
             String line;
 
             while ((line = br.readLine()) != null) {
-                calibrationString.add(line);
+                calibrationStrings.add(line);
             }
         }
     }
 
-    static int getCalibartionValue(final String s) {
+    static int getCalibrationValue(final String s) {
         Stream<Character> charStream = new String(s.toCharArray()).chars().mapToObj(i -> (char)i);
-        List<Character> digitList = charStream.filter(Character::isDigit).collect(Collectors.toList());
+        List<Character> digitList = charStream.filter(Character::isDigit).toList();
 
-        if (digitList.size() >= 1) {
+        if (!digitList.isEmpty()) {
             String temp = "" + digitList.get(0) + digitList.get(digitList.size() - 1);
             return Integer.valueOf(temp);
         }
         return -1;
     }
 
-    static int getCalibartionValue2(final String s) {
+    static int getCalibrationValue2(final String s) {
 
         List<Integer> digitList = new ArrayList<>();
         int index = 0;
@@ -53,7 +52,7 @@ public class Trebuchet extends Puzzle {
             } else {
                 int in = 1;
                 for (String num : numberName) {
-                    if (s.substring(index).startsWith(num)) {
+                    if (s.startsWith(num, index)) {
                         digitList.add(in);
                         break;
                     }
@@ -63,7 +62,7 @@ public class Trebuchet extends Puzzle {
             index++;
         }
 
-        if (digitList.size() >= 1) {
+        if (!digitList.isEmpty()) {
             return 10 * digitList.get(0) + digitList.get(digitList.size() - 1);
         }
 
@@ -74,8 +73,8 @@ public class Trebuchet extends Puzzle {
     @Override
     public Object getAnswer1() {
         int sum = 0;
-        for (String s : calibrationString) {
-            sum += getCalibartionValue(s);
+        for (String s : calibrationStrings) {
+            sum += getCalibrationValue(s);
         }
         return sum;
     }
@@ -83,8 +82,8 @@ public class Trebuchet extends Puzzle {
     @Override
     public Object getAnswer2() {
         int sum = 0;
-        for (String s : calibrationString) {
-            sum += getCalibartionValue2(s);
+        for (String s : calibrationStrings) {
+            sum += getCalibrationValue2(s);
         }
         return sum;
     }
