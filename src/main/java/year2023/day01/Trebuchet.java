@@ -15,7 +15,6 @@ import helper.Puzzle;
 public class Trebuchet extends Puzzle {
 
     protected static String[] numberName = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-    String input;
     List<String> calibrationStrings = new ArrayList<>();
 
 
