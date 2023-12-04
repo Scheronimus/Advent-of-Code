@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import helper.ListUtils;
 import helper.Puzzle;
 
 
@@ -23,14 +24,12 @@ public class Scratchcards extends Puzzle {
 
             while ((line = br.readLine()) != null) {
                 String[] cardSplit = line.split(":");
-
                 int cardId = Integer.parseInt(cardSplit[0].replace("Card ", "").trim());
 
                 String[] numbersSplit = cardSplit[1].trim().split("\\|");
-
-
                 List<Integer> winningNumbers = stringToList(numbersSplit[0].trim());
                 List<Integer> playNumbers = stringToList(numbersSplit[1].trim());
+
                 cardSet.add(new Card(cardId, winningNumbers, playNumbers));
             }
         }
@@ -56,22 +55,12 @@ public class Scratchcards extends Puzzle {
         return res;
     }
 
-
     @Override
     public Object getAnswer2() {
-
-        List<Integer> cardAmount = new ArrayList<>();
-        cardSet.stream().forEach(card -> {
-            cardAmount.add(1);
-        });
-        // for (Card card : cardSet) {
-        // cardAmount.add(1);
-        // }
-
+        List<Integer> cardAmount = ListUtils.initializeIntegerList(cardSet.size(), 1);
         for (Card card : cardSet) {
             card.calculateWinningCard(cardAmount);
         }
-
         return cardAmount.stream().mapToInt(i -> i).sum();
     }
 
@@ -80,6 +69,4 @@ public class Scratchcards extends Puzzle {
         System.out.println("Answer 1: " + scratchcards.getAnswer1());
         System.out.println("Answer 2: " + scratchcards.getAnswer2());
     }
-
-
 }
