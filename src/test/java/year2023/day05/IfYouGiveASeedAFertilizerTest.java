@@ -7,7 +7,7 @@ import testhelper.PuzzleUnitTest;
 public class IfYouGiveASeedAFertilizerTest extends PuzzleUnitTest {
 
     public IfYouGiveASeedAFertilizerTest() throws IOException {
-        super(new IfYouGiveASeedAFertilizer("year2023/day05/test_input"), 35L, 2L);
+        super(new IfYouGiveASeedAFertilizer("year2023/day05/test_input"), 35L, 46L);
     }
 
 }

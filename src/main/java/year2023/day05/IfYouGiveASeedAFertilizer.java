@@ -77,10 +77,46 @@ public class IfYouGiveASeedAFertilizer extends Puzzle {
             ranges.add(new Range(almanac.seeds.get(i), almanac.seeds.get(i + 1)));
         }
 
-        System.out.println(ranges);
+        // System.out.println(ranges.get(1));
 
+        AlmanacMap map = almanac.seedToSoil;
+
+        System.out.println(ranges);
+        List<Range> temp = getDestinationRange(ranges, almanac.seedToSoil);
+        System.out.println(temp);
+        temp = getDestinationRange(temp, almanac.soilToFertilizer);
+        System.out.println(temp);
+        temp = getDestinationRange(temp, almanac.fertilizerToWater);
+        System.out.println(temp);
+
+        temp = getDestinationRange(temp, almanac.waterToLight);
+        System.out.println(temp);
+
+        temp = getDestinationRange(temp, almanac.lightToTemperature);
+        System.out.println(temp);
+
+        temp = getDestinationRange(temp, almanac.temperatureToHumidity);
+        System.out.println(temp);
+        temp = getDestinationRange(temp, almanac.humidityToLocation);
+        System.out.println(temp);
+
+
+        long res = Long.MAX_VALUE;
+        for (Range r : temp) {
+            if (r.start < res) {
+                res = r.start;
+            }
+        }
         // TODO Auto-generated method stub
-        return null;
+        return res;
+    }
+
+    private List<Range> getDestinationRange(final List<Range> ranges, final AlmanacMap map) {
+        List<Range> temp = new ArrayList<>();
+        for (Range range : ranges) {
+            temp.addAll(map.getDestination(range));
+        }
+        return temp;
     }
 
     public static void main(final String[] args) throws IOException {
