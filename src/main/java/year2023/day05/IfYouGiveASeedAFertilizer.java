@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import helper.ListUtils;
@@ -13,7 +12,6 @@ import helper.Puzzle;
 
 
 public class IfYouGiveASeedAFertilizer extends Puzzle {
-
 
     Almanac almanac = new Almanac();
 
@@ -49,11 +47,7 @@ public class IfYouGiveASeedAFertilizer extends Puzzle {
                     List<Long> entryList = ListUtils.stringToLongList(line.trim());
                     currentMap.add(new AlmanacMapEntry(entryList.get(0), entryList.get(1), entryList.get(2)));
                 }
-
-
             }
-
-            // System.out.println("done");
         }
     }
 
@@ -69,37 +63,10 @@ public class IfYouGiveASeedAFertilizer extends Puzzle {
         return res;
     }
 
-
     @Override
     public Object getAnswer2() {
-        List<Range> ranges = new ArrayList<>();
-        for (int i = 0; i < almanac.seeds.size(); i = i + 2) {
-            ranges.add(new Range(almanac.seeds.get(i), almanac.seeds.get(i + 1)));
-        }
-
-        // System.out.println(ranges.get(1));
-
-        AlmanacMap map = almanac.seedToSoil;
-
-        System.out.println(ranges);
-        List<Range> temp = getDestinationRange(ranges, almanac.seedToSoil);
-        System.out.println(temp);
-        temp = getDestinationRange(temp, almanac.soilToFertilizer);
-        System.out.println(temp);
-        temp = getDestinationRange(temp, almanac.fertilizerToWater);
-        System.out.println(temp);
-
-        temp = getDestinationRange(temp, almanac.waterToLight);
-        System.out.println(temp);
-
-        temp = getDestinationRange(temp, almanac.lightToTemperature);
-        System.out.println(temp);
-
-        temp = getDestinationRange(temp, almanac.temperatureToHumidity);
-        System.out.println(temp);
-        temp = getDestinationRange(temp, almanac.humidityToLocation);
-        System.out.println(temp);
-
+        List<Range> ranges = almanac.getSeedsRange();
+        List<Range> temp = almanac.calculateLocationForSeed(ranges);
 
         long res = Long.MAX_VALUE;
         for (Range r : temp) {
@@ -107,16 +74,7 @@ public class IfYouGiveASeedAFertilizer extends Puzzle {
                 res = r.start;
             }
         }
-        // TODO Auto-generated method stub
         return res;
-    }
-
-    private List<Range> getDestinationRange(final List<Range> ranges, final AlmanacMap map) {
-        List<Range> temp = new ArrayList<>();
-        for (Range range : ranges) {
-            temp.addAll(map.getDestination(range));
-        }
-        return temp;
     }
 
     public static void main(final String[] args) throws IOException {
@@ -124,6 +82,4 @@ public class IfYouGiveASeedAFertilizer extends Puzzle {
         System.out.println("Answer 1: " + ifYouGiveASeedAFertilizer.getAnswer1());
         System.out.println("Answer 2: " + ifYouGiveASeedAFertilizer.getAnswer2());
     }
-
-
 }

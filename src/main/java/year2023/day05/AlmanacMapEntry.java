@@ -17,9 +17,6 @@ public class AlmanacMapEntry {
     }
 
     public long calculateDestination(final long source) {
-
         return source - sourceRangeStart + destinationRangeStart;
     }
-
-
 }
