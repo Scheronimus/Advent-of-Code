@@ -12,4 +12,26 @@ public class ListUtils {
         }
         return integerList;
     }
+
+    public static List<Integer> stringToList(final String stringList) {
+        List<Integer> list = new ArrayList<>();
+
+        String[] numbers = stringList.split(" +");
+
+        for (String number : numbers) {
+            list.add(Integer.parseInt(number));
+        }
+        return list;
+    }
+
+    public static List<Long> stringToLongList(final String stringList) {
+        List<Long> list = new ArrayList<>();
+
+        String[] numbers = stringList.split(" +");
+
+        for (String number : numbers) {
+            list.add(Long.parseLong(number));
+        }
+        return list;
+    }
 }

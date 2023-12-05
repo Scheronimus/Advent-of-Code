@@ -27,24 +27,14 @@ public class Scratchcards extends Puzzle {
                 int cardId = Integer.parseInt(cardSplit[0].replace("Card ", "").trim());
 
                 String[] numbersSplit = cardSplit[1].trim().split("\\|");
-                List<Integer> winningNumbers = stringToList(numbersSplit[0].trim());
-                List<Integer> playNumbers = stringToList(numbersSplit[1].trim());
+                List<Integer> winningNumbers = ListUtils.stringToList(numbersSplit[0].trim());
+                List<Integer> playNumbers = ListUtils.stringToList(numbersSplit[1].trim());
 
                 cardSet.add(new Card(cardId, winningNumbers, playNumbers));
             }
         }
     }
 
-    private List<Integer> stringToList(final String stringList) {
-        List<Integer> list = new ArrayList<>();
-
-        String[] numbers = stringList.split(" +");
-
-        for (String number : numbers) {
-            list.add(Integer.parseInt(number));
-        }
-        return list;
-    }
 
     @Override
     public Object getAnswer1() {
