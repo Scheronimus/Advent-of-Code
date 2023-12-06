@@ -1,41 +1,31 @@
 package year2023.day06;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import helper.QuadraticEquationSolver;
+
 public class BoatRace {
-    double time;
-    double recordDistance;
+
+    QuadraticEquationSolver solver;
 
 
     public BoatRace(final double time, final double recordDistance) {
         super();
-        this.time = time;
-        this.recordDistance = recordDistance;
+
+        // (x)(time-x)>recordDistance
+        // -x^2+x*time-recordDistance>0
+        solver = new QuadraticEquationSolver(-1, time, -recordDistance);
     }
 
-
-    double getDiscriminant() {
-        return Math.pow(time, 2) - 4 * recordDistance;
-    }
-
-    List<Double> getRacines() {
-        List<Double> racines = new ArrayList<>();
-        double delta = getDiscriminant();
-        double r1 = ((-time) - Math.sqrt(delta)) / -2;
-        racines.add(r1);
-        double r2 = (-time + Math.sqrt(delta)) / -2;
-        racines.add(r2);
-        Collections.sort(racines);
-        return racines;
-    }
 
     long getNumberOfWaysToBeatRecord() {
-        List<Double> racines = getRacines();
-        double r1 = racines.get(0);
-        double r2 = racines.get(1);
+        List<Double> roots = solver.getRoots();
 
+        double r1 = roots.get(0);
+        double r2 = roots.get(1);
+
+
+        // The equation is strict so we need to check if the root are integer to exclude them
         if (isInteger(r1)) {
             r1 = r1 + 1;
         }
@@ -44,6 +34,7 @@ public class BoatRace {
             r2 = r2 - 1;
         }
 
+        // return the number of integer included between the 2 roots.
         return (long)(Math.floor(r2) - Math.ceil(r1) + 1);
     }
 
