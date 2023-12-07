@@ -1,13 +1,11 @@
 package year2023.day07;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class Hand {
     String cards;
@@ -33,12 +31,14 @@ public class Hand {
     }
 
     public int calculateHandType(final String cards) {
-        Map<Character, Integer> map = cardsToMap(cards);
+        List<Entry<Character, Integer>> map = cardsToMap(cards);
 
         return getTypeValue(map);
     }
 
-    private Map<Character, Integer> cardsToMap(final String cards) {
+    private List<Entry<Character, Integer>> cardsToMap(final String cards) {
+
+
         Map<Character, Integer> map = new HashMap<>();
         for (char c : cards.toCharArray()) {
             if (map.containsKey(c)) {
@@ -48,46 +48,58 @@ public class Hand {
             }
         }
 
-        map = sortByValue(map, false);
-        return map;
+        List<Entry<Character, Integer>> list = new ArrayList<>(map.entrySet());
+
+        Collections.sort(list, (left, right) -> {
+            return right.getValue() - left.getValue();
+        });
+
+        return list;
     }
 
     public int calculateHandTypeV2(final String cards) {
-        Map<Character, Integer> map = cardsToMap(cards);
+        List<Entry<Character, Integer>> map = cardsToMap(cards);
+        int indexJoker = findJokerIndex(map);
 
-        Integer jokerNb = map.get('J');
-        if (jokerNb == null) {
-            jokerNb = 0;
-        }
-
-        if (map.size() > 1) {
-            Map.Entry<Character, Integer> firstValue =
-                    map.entrySet().stream().filter(c -> c.getKey() != 'J').findFirst().get();
-            map.put(firstValue.getKey(), firstValue.getValue() + jokerNb);
-            map.remove('J');
+        if (map.size() > 1 && indexJoker >= 0) {
+            int jokerNb = map.get(indexJoker).getValue();
+            map.remove(indexJoker);
+            map.get(0).setValue(map.get(0).getValue() + jokerNb);
         }
 
         return getTypeValue(map);
     }
 
-    private int getTypeValue(final Map<Character, Integer> map) {
-        List<Integer> val = new ArrayList<>(map.values());
+    private int findJokerIndex(List<Entry<Character, Integer>> map) {
+        int indexJoker = -1;
+        int i = 0;
+        for (Entry<Character, Integer> entry : map) {
+            if (entry.getKey() == 'J') {
+                indexJoker = i;
+                break;
+            }
+            i++;
+        }
+        return indexJoker;
+    }
+
+    private int getTypeValue(final List<Entry<Character, Integer>> val) {
         if (val.size() == 1) {
             return 7;
         }
-        if (val.size() == 2 && val.get(0) == 4) {
+        if (val.size() == 2 && val.get(0).getValue() == 4) {
             return 6;
         }
-        if (val.size() == 2 && val.get(0) == 3) {
+        if (val.size() == 2 && val.get(0).getValue() == 3) {
             return 5;
         }
-        if (val.size() == 3 && val.get(0) == 3) {
+        if (val.size() == 3 && val.get(0).getValue() == 3) {
             return 4;
         }
-        if (val.size() == 3 && val.get(0) == 2) {
+        if (val.size() == 3 && val.get(0).getValue() == 2) {
             return 3;
         }
-        if (val.size() == 4 && val.get(0) == 2) {
+        if (val.size() == 4 && val.get(0).getValue() == 2) {
             return 2;
         }
         return 1;
@@ -96,15 +108,5 @@ public class Hand {
 
     public int getHandType() {
         return handType;
-    }
-
-    private static Map<Character, Integer> sortByValue(final Map<Character, Integer> unsortMap, final boolean order) {
-        List<Entry<Character, Integer>> list = new LinkedList<>(unsortMap.entrySet());
-        list.sort((o1, o2) -> order
-                ? o1.getValue().compareTo(o2.getValue()) == 0 ? o1.getKey().compareTo(o2.getKey())
-                        : o1.getValue().compareTo(o2.getValue())
-                : o2.getValue().compareTo(o1.getValue()) == 0 ? o2.getKey().compareTo(o1.getKey())
-                        : o2.getValue().compareTo(o1.getValue()));
-        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
     }
 }
