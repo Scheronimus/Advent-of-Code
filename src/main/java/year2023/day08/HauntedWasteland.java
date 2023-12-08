@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import helper.Puzzle;
+import year2022.day17.LoopDetection;
 
 
 public class HauntedWasteland extends Puzzle {
@@ -80,18 +81,44 @@ public class HauntedWasteland extends Puzzle {
     @Override
     public Object getAnswer2() {
         List<String> starts = left.keySet().stream().filter(key -> key.charAt(2) == 'A').toList();
-        System.out.println(starts);
 
         int index = 0;
         int step = 0;
         List<String> positionList = new ArrayList<>(starts);
-        while (!isEnd(positionList)) {
+        List<LoopDetection> loopDetectors = new ArrayList<>();
+        for (int i = 0; i < positionList.size(); i++) {
+            loopDetectors.add(new LoopDetection());
+        }
+        List<Boolean> detected = new ArrayList<>();
+        for (int i = 0; i < positionList.size(); i++) {
+            detected.add(false);
+        }
+
+        List<Integer> loop = new ArrayList<>();
+        for (int i = 0; i < positionList.size(); i++) {
+            loop.add(0);
+        }
+
+        while (!isEnd(detected)) {
             int i = 0;
             for (String p : positionList) {
+                if (detected.get(i)) {
+                    i++;
+                    continue;
+                }
                 if (instruction.charAt(index) == 'L') {
                     positionList.set(i, left.get(p));
                 } else {
                     positionList.set(i, right.get(p));
+                }
+                if (positionList.get(i).charAt(2) == 'Z') {
+                    Object res = loopDetectors.get(i).detectLoop(new Snapshot(positionList.get(i), index, step + 1));
+                    if (res != null) {
+                        loop.set(i, (step + 1 - ((Snapshot)res).step));
+                        detected.set(i, true);
+                    } else {
+                        loopDetectors.get(i).addItem(new Snapshot(positionList.get(i), index, step + 1));
+                    }
                 }
                 i++;
             }
@@ -104,17 +131,41 @@ public class HauntedWasteland extends Puzzle {
 
             step++;
         }
-        return step;
+
+
+        Integer gcd = loop.get(0);
+        for (int l : loop) {
+            gcd = gcd(gcd, l);
+        }
+
+
+        long res = gcd;
+        for (int l : loop) {
+            res *= (l / gcd);
+        }
+
+        return res;
     }
 
-    boolean isEnd(final List<String> positionList) {
-        for (String p : positionList) {
-            if (p.charAt(2) != 'Z') {
+    int gcd(int n1, int n2) {
+        int gcd = 1;
+        for (int i = 1; i <= n1 && i <= n2; i++) {
+            if (n1 % i == 0 && n2 % i == 0) {
+                gcd = i;
+            }
+        }
+        return gcd;
+    }
+
+    boolean isEnd(final List<Boolean> detected) {
+        for (Boolean d : detected) {
+            if (!d) {
                 return false;
             }
         }
         return true;
     }
+
 
     public static void main(final String[] args) throws IOException {
         HauntedWasteland puzzle = new HauntedWasteland("year2023/day08/input");
