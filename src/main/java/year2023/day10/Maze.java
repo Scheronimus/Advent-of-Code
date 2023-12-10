@@ -9,8 +9,6 @@ public class Maze {
     public Maze(List<String> mazeMap) {
         super();
         this.mazeMap = mazeMap;
-        // System.out.println(getStartingPoint());
-        // System.out.println(getTile(2, 0));
     }
 
     public Tile getStartingPoint() {
@@ -28,6 +26,4 @@ public class Maze {
     public Tile getTile(int x, int y) {
         return new Tile(x, y, mazeMap.get(y).charAt(x));
     }
-
-
 }

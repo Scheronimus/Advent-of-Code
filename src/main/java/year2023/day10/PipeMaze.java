@@ -21,11 +21,9 @@ public class PipeMaze extends Puzzle {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(getInputFile()), StandardCharsets.UTF_8));) {
             String line;
-
             while ((line = br.readLine()) != null) {
                 mazeMap.add(line);
             }
-
             maze = new Maze(mazeMap);
         }
     }
@@ -36,9 +34,7 @@ public class PipeMaze extends Puzzle {
         Tile next = null;
         Direction validDirection = null;
         for (Direction d : Direction.values()) {
-            System.out.println(d);
             TileDirection tileDirection = new TileDirection(start.x, start.y, d);
-            System.out.println(tileDirection.x + " " + tileDirection.y);
             if (tileDirection.x >= 0 && tileDirection.y >= 0) {
                 Tile nextTile = maze.getTile(tileDirection.x, tileDirection.y);
                 if (nextTile.getNextTile(d) != null) {
@@ -49,19 +45,16 @@ public class PipeMaze extends Puzzle {
             }
         }
 
-
         Tile current = next;
         Direction crrentDirection = validDirection;
         int step = 1;
 
         while (current.symbol != 'S') {
-
             TileDirection td = current.getNextTile(crrentDirection);
             current = maze.getTile(td.x, td.y);
             crrentDirection = td.direction;
             step++;
         }
-
 
         return step / 2;
     }
@@ -69,15 +62,11 @@ public class PipeMaze extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-
-        List<Tile> mainLoop = new ArrayList<>();
         Tile start = maze.getStartingPoint();
         Tile next = null;
         Direction validDirection = null;
         for (Direction d : Direction.values()) {
-            System.out.println(d);
             TileDirection tileDirection = new TileDirection(start.x, start.y, d);
-            System.out.println(tileDirection.x + " " + tileDirection.y);
             if (tileDirection.x >= 0 && tileDirection.y >= 0) {
                 Tile nextTile = maze.getTile(tileDirection.x, tileDirection.y);
                 if (nextTile.getNextTile(d) != null) {
@@ -88,63 +77,50 @@ public class PipeMaze extends Puzzle {
             }
         }
 
-        List<Direction> startD = new ArrayList<>();
-        // Tile next = null;
-        // Direction validDirection = null;
-        for (Direction d : Direction.values()) {
-            System.out.println(d);
-            TileDirection tileDirection = new TileDirection(start.x, start.y, d);
-            System.out.println(tileDirection.x + " " + tileDirection.y);
-            if (tileDirection.x >= 0 && tileDirection.y >= 0) {
-                Tile nextTile = maze.getTile(tileDirection.x, tileDirection.y);
-                if (nextTile.getNextTile(d) != null) {
-                    startD.add(d);
-                    // validDirection = d;
-                    // next = nextTile;
-                    // break;
-                }
-            }
-        }
 
-        char startChar = getchar(startD);
+        List<Tile> mainLoop = findMainLoop(start, next, validDirection);
 
+        int xMax = maze.mazeMap.get(0).length();
+        int yMax = maze.mazeMap.size();
+        char startChar = getStartCharBaseOnPossibleDirection(getPossibleDirection(start));
+        List<String> mazeMapPurified = purifyMazeMap(mainLoop, startChar, xMax, yMax);
+
+
+        return fillLoop(mazeMapPurified, xMax, yMax);
+    }
+
+    private List<Tile> findMainLoop(Tile start, Tile next, Direction validDirection) {
+        List<Tile> mainLoop = new ArrayList<>();
         mainLoop.add(start);
         Tile current = next;
-        Direction crrentDirection = validDirection;
+        Direction currentDirection = validDirection;
         int step = 1;
 
         while (current.symbol != 'S') {
             mainLoop.add(current);
-            TileDirection td = current.getNextTile(crrentDirection);
+            TileDirection td = current.getNextTile(currentDirection);
             current = maze.getTile(td.x, td.y);
-            crrentDirection = td.direction;
+            currentDirection = td.direction;
             step++;
         }
+        return mainLoop;
+    }
 
-        // System.out.println(mainLoop);
-
-        int xMax = maze.mazeMap.get(0).length();
-        int yMax = maze.mazeMap.size();
-
-        List<String> mazeMapPurified = new ArrayList<>();
-        for (int y = 0; y < yMax; y++) {
-            String temp = "";
-            for (int x = 0; x < xMax; x++) {
-                Tile currentT = maze.getTile(x, y);
-                if (mainLoop.contains(currentT)) {
-                    if (currentT.symbol == 'S') {
-                        temp += startChar;
-                    } else {
-                        temp += currentT.symbol;
-                    }
-                } else {
-                    temp += ".";
+    private List<Direction> getPossibleDirection(Tile start) {
+        List<Direction> startD = new ArrayList<>();
+        for (Direction d : Direction.values()) {
+            TileDirection tileDirection = new TileDirection(start.x, start.y, d);
+            if (tileDirection.x >= 0 && tileDirection.y >= 0) {
+                Tile nextTile = maze.getTile(tileDirection.x, tileDirection.y);
+                if (nextTile.getNextTile(d) != null) {
+                    startD.add(d);
                 }
             }
-            System.out.println(temp);
-            mazeMapPurified.add(temp);
         }
-        System.out.println("**********");
+        return startD;
+    }
+
+    private int fillLoop(List<String> mazeMapPurified, int xMax, int yMax) {
         int res = 0;
         for (int y = 0; y < yMax; y++) {
             double t = 0;
@@ -165,7 +141,6 @@ public class PipeMaze extends Puzzle {
                     } else {
                         t = t - 0.5;
                     }
-
                     temp += c;
                     previous = 'X';
                 } else if (c == 'J') {
@@ -174,7 +149,6 @@ public class PipeMaze extends Puzzle {
                     } else {
                         t = t - 0.5;
                     }
-
                     temp += c;
                     previous = 'X';
                 } else if (c == '.' && Math.floor(t) % 2 == 1) {
@@ -183,16 +157,34 @@ public class PipeMaze extends Puzzle {
                 } else {
                     temp += c;
                 }
-
             }
-            System.out.println(temp);
         }
-
         return res;
     }
 
+    private List<String> purifyMazeMap(List<Tile> mainLoop, char startChar, int xMax, int yMax) {
+        List<String> mazeMapPurified = new ArrayList<>();
+        for (int y = 0; y < yMax; y++) {
+            String temp = "";
+            for (int x = 0; x < xMax; x++) {
+                Tile currentT = maze.getTile(x, y);
+                if (mainLoop.contains(currentT)) {
+                    if (currentT.symbol == 'S') {
+                        temp += startChar;
+                    } else {
+                        temp += currentT.symbol;
+                    }
+                } else {
+                    temp += ".";
+                }
+            }
+            mazeMapPurified.add(temp);
+        }
+        return mazeMapPurified;
+    }
 
-    private char getchar(List<Direction> startD) {
+
+    private char getStartCharBaseOnPossibleDirection(List<Direction> startD) {
         if (startD.contains(Direction.UP) && startD.contains(Direction.DOWN)) {
             return '|';
         }
@@ -219,6 +211,4 @@ public class PipeMaze extends Puzzle {
         System.out.println("Answer 1: " + puzzle.getAnswer1());
         System.out.println("Answer 2: " + puzzle.getAnswer2());
     }
-
-
 }
