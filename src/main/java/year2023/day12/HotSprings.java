@@ -33,12 +33,12 @@ public class HotSprings extends Puzzle {
             }
         }
 
-        System.out.println(records);
+        // System.out.println(records);
         // Pattern p = records.get(0).buildPattern();
         // Matcher matcher = p.matcher(".#.#.###.......");
         // System.out.println(matcher.find());
         Set<String> val = records.get(0).findAllCommutation();
-        System.out.println(val);
+        // System.out.println(val);
     }
 
     @Override
@@ -46,17 +46,15 @@ public class HotSprings extends Puzzle {
         int res = 0;
         for (Record r : records) {
             int valid = 0;
-            System.out.println(r.spring);
+            // System.out.println(r.spring);
             Set<String> com = r.findAllCommutation();
-            System.out.println(com);
-            for (String s : com) {
-                if (r.isSolution(s)) {
-                    System.out.println(s);
-                    valid++;
-                }
-            }
-            System.out.println(valid);
-            res += valid;
+            // System.out.println(com);
+            // System.out.println(com.size());
+            /*
+             * for (String s : com) { if (r.isSolution(s)) { System.out.println(s); valid++; } }
+             * System.out.println(valid);
+             */
+            res += com.size();
         }
         return res;
     }
@@ -64,8 +62,25 @@ public class HotSprings extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
-        return null;
+        long res = 0;
+        int index = 0;
+        for (Record r : records) {
+            Record unfold = r.unfold();
+            // int valid = 0;
+            // System.out.println(r.spring);
+            Set<String> com = unfold.findAllCommutation();
+            // System.out.println(com);
+            // System.out.println(com.size());
+            /*
+             * for (String s : com) { if (r.isSolution(s)) { System.out.println(s); valid++; } }
+             * System.out.println(valid);
+             */
+            res += com.size();
+            index++;
+            System.out.println(com.size());
+            System.out.println(index);
+        }
+        return res;
     }
 
     public static void main(final String[] args) throws IOException {

@@ -1,5 +1,7 @@
 package year2023.day12;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +17,7 @@ public class Record {
         super();
         this.spring = spring;
         this.damagedSprings = damagedSprings;
-        this.p = buildPattern();
+        this.p = buildExtendedPattern();
     }
 
     @Override
@@ -41,6 +43,24 @@ public class Record {
 
     }
 
+    public Pattern buildExtendedPattern() {
+        String s = "^[\\.\\?]*";
+        int index = 0;
+        for (Integer val : damagedSprings) {
+            s += "[#\\?]{" + val + "}";
+            if (index == damagedSprings.size() - 1) {
+                s += "[\\.\\?]*$";
+            } else {
+                s += "[\\.\\?]+";
+            }
+            index++;
+        }
+        // System.out.println(s);
+        Pattern pattern = Pattern.compile(s);
+        return pattern;
+
+    }
+
     public boolean isSolution(final String input) {
         if (input.contains("?")) {
             return false;
@@ -55,6 +75,10 @@ public class Record {
 
     public Set<String> findAllCommutation(final String input) {
 
+        Matcher matcher = p.matcher(input);
+        if (!matcher.find()) {
+            return Collections.emptySet();
+        }
 
         if (!input.contains("?")) {
             return Set.of(input);
@@ -68,6 +92,19 @@ public class Record {
 
         return res;
 
+    }
+
+    Record unfold() {
+        String newSpring = "";
+        List<Integer> newDamagedSprings = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            newSpring += spring;
+            newDamagedSprings.addAll(damagedSprings);
+            if (i != 4) {
+                newSpring += "?";
+            }
+        }
+        return new Record(newSpring, newDamagedSprings);
     }
 
 
