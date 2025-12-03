@@ -37,7 +37,7 @@ public class Template extends Puzzle {
     }
 
     public static void main(final String[] args) throws IOException {
-        Template puzzle = new Template("year2023/dayXX/input");
+        Template puzzle = new Template("year2025/dayXX/input");
         System.out.println("Answer 1: " + puzzle.getAnswer1());
         System.out.println("Answer 2: " + puzzle.getAnswer2());
     }
