@@ -5,29 +5,32 @@ import java.util.List;
 
 import helper.Puzzle;
 
-
 public class Template extends Puzzle {
+
+    // Parsed state here (lists, models, ints, whatever)
+    // Example:
+    // private List<Integer> numbers;
 
     public Template(final String input) throws IOException {
         super(input);
-        List<String> lines = getLines();
+        parse(getLines());
+    }
 
+    private void parse(List<String> lines) {
         for (String line : lines) {
-            System.out.println(line);
-            // TODO parse
+            // TODO parsing logic
         }
     }
 
     @Override
     public Object getAnswer1() {
-        // TODO Auto-generated method stub
+        // TODO use parsed data
         return null;
     }
 
-
     @Override
     public Object getAnswer2() {
-        // TODO Auto-generated method stub
+        // TODO
         return null;
     }
 
@@ -36,6 +39,4 @@ public class Template extends Puzzle {
         System.out.println("Answer 1: " + puzzle.getAnswer1());
         System.out.println("Answer 2: " + puzzle.getAnswer2());
     }
-
-
 }
