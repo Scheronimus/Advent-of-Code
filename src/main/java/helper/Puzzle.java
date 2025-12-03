@@ -2,12 +2,14 @@ package helper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 
 public abstract class Puzzle {
-    File inputFile;
+    private final File inputFile;
+    private List<String> cachedLines = null;
 
-    protected Puzzle(final String input) throws IOException {
-        super();
+    protected Puzzle(final String input) {
         this.inputFile = new ResourceReader().read(input);
     }
 
@@ -15,8 +17,14 @@ public abstract class Puzzle {
         return inputFile;
     }
 
+    protected List<String> getLines() throws IOException {
+        if (cachedLines == null) {
+            cachedLines = Files.readAllLines(inputFile.toPath());
+        }
+        return cachedLines;
+    }
+
     public abstract Object getAnswer1();
 
     public abstract Object getAnswer2();
-
 }

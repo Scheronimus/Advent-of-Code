@@ -1,10 +1,7 @@
 package template;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import helper.Puzzle;
 
@@ -13,13 +10,11 @@ public class Template extends Puzzle {
 
     public Template(final String input) throws IOException {
         super(input);
-        try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(getInputFile()), StandardCharsets.UTF_8));) {
-            String line;
+        List<String> lines = getLines();
 
-            while ((line = br.readLine()) != null) {
-                // TODO
-            }
+        for (String line : lines) {
+            System.out.println(line);
+            // TODO parse
         }
     }
 
