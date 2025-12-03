@@ -25,12 +25,8 @@ public class GiftShop extends Puzzle {
             String line;
 
             while ((line = br.readLine()) != null) {
-                // System.out.println("--> " + line);
                 rangeList = new ArrayList<>(Arrays.asList(line.split(",")));
-
             }
-            // System.out.println(rangeList);
-
         }
     }
 
@@ -41,7 +37,6 @@ public class GiftShop extends Puzzle {
             String[] val = range.split("-");
             long start = Long.parseLong(val[0]);
             long end = Long.parseLong(val[1]);
-            System.out.println(start + "--> " + end);
 
             for (long i = start; i <= end; i++) {
 
@@ -49,7 +44,7 @@ public class GiftShop extends Puzzle {
                 if (s.length() % 2 == 0) {
                     String part1 = s.substring(0, s.length() / 2);
                     String part2 = s.substring(s.length() / 2, s.length());
-                    System.out.println(part1 + "--> " + part2);
+
                     if (part1.equals(part2)) {
                         count += i;
                     }
@@ -83,7 +78,6 @@ public class GiftShop extends Puzzle {
             String[] val = range.split("-");
             long start = Long.parseLong(val[0]);
             long end = Long.parseLong(val[1]);
-            System.out.println(start + "--> " + end);
 
             for (long i = start; i <= end; i++) {
 
@@ -97,6 +91,7 @@ public class GiftShop extends Puzzle {
                         if (!memory.contains(i) && parts.size() == 1) {
                             count += i;
                             memory.add(i);
+                            break;
 
                         }
                     }
