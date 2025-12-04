@@ -22,15 +22,15 @@ public class PrintingDepartment extends Puzzle {
     }
 
     private List<AbstractMap.SimpleEntry<Integer, Integer>> findRollToRemove() {
-        int width = rollPaperMap.getMapWidth();
-        int height = rollPaperMap.getMapHeight();
+        int width = rollPaperMap.width();
+        int height = rollPaperMap.height();
 
         List<AbstractMap.SimpleEntry<Integer, Integer>> toRemove = new ArrayList<>();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (rollPaperMap.getContentAt(x, y) == '@') {
-                    List<Character> adjacentChar = rollPaperMap.getAdjacentOf(x, y);
+                if (rollPaperMap.get(x, y) == '@') {
+                    List<Character> adjacentChar = rollPaperMap.neighbors8(x, y);
                     long rollSymbolCountInAdjacent = adjacentChar.stream().filter(c -> c == '@').count();
                     if (rollSymbolCountInAdjacent < 4) {
                         toRemove.add(new AbstractMap.SimpleEntry<>(x, y));
@@ -44,21 +44,21 @@ public class PrintingDepartment extends Puzzle {
 
     private void updateRollMap(final List<AbstractMap.SimpleEntry<Integer, Integer>> rollsToRemove) {
         for (SimpleEntry<Integer, Integer> roll : rollsToRemove) {
-            rollPaperMap.setContentAt(roll.getKey(), roll.getValue(), '.');
+            rollPaperMap.set(roll.getKey(), roll.getValue(), '.');
         }
     }
 
     @Override
     public Object getAnswer1() {
         long result = 0;
-        int width = rollPaperMap.getMapWidth();
-        int height = rollPaperMap.getMapHeight();
+        int width = rollPaperMap.width();
+        int height = rollPaperMap.height();
 
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (rollPaperMap.getContentAt(x, y) == '@') {
-                    List<Character> adjacentChar = rollPaperMap.getAdjacentOf(x, y);
+                if (rollPaperMap.get(x, y) == '@') {
+                    List<Character> adjacentChar = rollPaperMap.neighbors8(x, y);
                     long rollSymbolCountInAdjacent = adjacentChar.stream().filter(c -> c == '@').count();
                     if (rollSymbolCountInAdjacent < 4) {
                         result++;
@@ -82,6 +82,7 @@ public class PrintingDepartment extends Puzzle {
             if (rollsToRemove.size() != 0) {
                 result += rollsToRemove.size();
                 updateRollMap(rollsToRemove);
+
             } else {
                 workInProgress = false;
             }
