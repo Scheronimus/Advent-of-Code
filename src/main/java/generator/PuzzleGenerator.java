@@ -1,4 +1,5 @@
 package generator;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class PuzzleGenerator {
         // Maven-style source folders
         String srcMainJava = "src/main/java/" + pkg.replace('.', '/');
         String srcTestJava = "src/test/java/" + pkg.replace('.', '/');
-        String resFolder = "src/main/resources/" + pkg.replace('.', '/');
+        String resFolder = "resources/" + pkg.replace('.', '/');
 
         // Create folders
         new File(srcMainJava).mkdirs();
@@ -51,7 +52,7 @@ public class PuzzleGenerator {
                 + "    @Override\n" + "    public Object getAnswer2() {\n" + "        // TODO\n"
                 + "        return null;\n" + "    }\n\n"
                 + "    public static void main(String[] args) throws IOException {\n" + "        " + className
-                + " puzzle = new " + className + "(\"src/main/resources/" + pkg.replace('.', '/') + "/input\");\n"
+                + " puzzle = new " + className + "(\"" + pkg.replace('.', '/') + "/input\");\n"
                 + "        System.out.println(\"Answer 1: \" + puzzle.getAnswer1());\n"
                 + "        System.out.println(\"Answer 2: \" + puzzle.getAnswer2());\n" + "    }\n" + "}\n";
     }
@@ -59,13 +60,13 @@ public class PuzzleGenerator {
     private static String getTestSource(String pkg, String className) {
         return "package " + pkg + ";\n\n" + "import java.io.IOException;\n" + "import testhelper.PuzzleUnitTest;\n\n"
                 + "public class " + className + "Test extends PuzzleUnitTest {\n" + "    public " + className
-                + "Test() throws IOException {\n" + "        super(new " + className + "(\"src/main/resources/"
-                + pkg.replace('.', '/') + "/inputTest\"), null, null);\n" + "    }\n" + "}\n";
+                + "Test() throws IOException {\n" + "        super(new " + className + "(\"" + pkg.replace('.', '/')
+                + "/inputTest\"), null, null);\n" + "    }\n" + "}\n";
     }
 
     public static void main(String[] args) throws IOException {
         // Example usage:
-        createNewPuzzle(2025, 6, "DoSomething");
+        createNewPuzzle(2025, 6, "Okidoki");
     }
 
 
