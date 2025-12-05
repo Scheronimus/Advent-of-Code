@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class PuzzleGenerator {
 
-
     public static void createNewPuzzle(int year, int day, String puzzleName) throws IOException {
         String dayStr = String.format("day%02d", day);
         String pkg = "year" + year + "." + dayStr;
@@ -21,25 +20,44 @@ public class PuzzleGenerator {
         new File(srcTestJava).mkdirs();
         new File(resFolder).mkdirs();
 
-        // Create puzzle class
+        // Puzzle class
         File javaFile = new File(srcMainJava + "/" + puzzleName + ".java");
-        try (FileWriter fw = new FileWriter(javaFile)) {
-            fw.write(getPuzzleSource(pkg, puzzleName));
+        if (javaFile.exists()) {
+            System.out.println("Skipped puzzle class (already exists): " + javaFile.getPath());
+        } else {
+            try (FileWriter fw = new FileWriter(javaFile)) {
+                fw.write(getPuzzleSource(pkg, puzzleName));
+            }
+            System.out.println("Generated puzzle class: " + javaFile.getPath());
         }
 
-        // Create test class
+        // Test class
         File testFile = new File(srcTestJava + "/" + puzzleName + "Test.java");
-        try (FileWriter fw = new FileWriter(testFile)) {
-            fw.write(getTestSource(pkg, puzzleName));
+        if (testFile.exists()) {
+            System.out.println("Skipped test class (already exists): " + testFile.getPath());
+        } else {
+            try (FileWriter fw = new FileWriter(testFile)) {
+                fw.write(getTestSource(pkg, puzzleName));
+            }
+            System.out.println("Generated test class: " + testFile.getPath());
         }
 
-        // Create empty input files
-        new File(resFolder + "/input").createNewFile();
-        new File(resFolder + "/inputTest").createNewFile();
+        // Input files
+        File inputFile = new File(resFolder + "/input");
+        if (inputFile.exists()) {
+            System.out.println("Input file already exists: " + inputFile.getPath());
+        } else {
+            inputFile.createNewFile();
+            System.out.println("Generated input file: " + inputFile.getPath());
+        }
 
-        System.out.println("Generated puzzle: " + javaFile.getPath());
-        System.out.println("Generated test: " + testFile.getPath());
-        System.out.println("Generated input files in: " + resFolder);
+        File inputTestFile = new File(resFolder + "/inputTest");
+        if (inputTestFile.exists()) {
+            System.out.println("InputTest file already exists: " + inputTestFile.getPath());
+        } else {
+            inputTestFile.createNewFile();
+            System.out.println("Generated inputTest file: " + inputTestFile.getPath());
+        }
     }
 
     private static String getPuzzleSource(String pkg, String className) {
