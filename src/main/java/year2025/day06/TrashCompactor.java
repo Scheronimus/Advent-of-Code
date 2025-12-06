@@ -69,29 +69,26 @@ public class TrashCompactor extends Puzzle {
 
     @Override
     public Object getAnswer2() {
-        String opreatorLine = fullLines.get(fullLines.size() - 1);
+        String operatorLine = fullLines.get(fullLines.size() - 1);
         fullLines.remove(fullLines.size() - 1);
-        System.out.println(opreatorLine);
+        System.out.println(operatorLine);
         System.out.println(fullLines);
         long finalResult = 0;
         char currentOperator = 'X';
         long currentResult = 0;
-        for (int i = 0; i < opreatorLine.length(); i++) {
+        for (int i = 0; i < operatorLine.length(); i++) {
 
-
-            if (opreatorLine.charAt(i) != ' ') {
+            char c = operatorLine.charAt(i);
+            if (c != ' ') {
                 finalResult += currentResult;
-                System.out.println("- currentResult: " + currentResult);
-                System.out.println("- finalResult set to " + finalResult);
-                currentOperator = opreatorLine.charAt(i);
+
+                currentOperator = c;
                 if (currentOperator == '+') {
-                    System.out.println("START '+' at " + i);
                     currentResult = 0;
                 } else if (currentOperator == '*') {
-                    System.out.println("START '*' at " + i);
                     currentResult = 1;
                 }
-                System.out.println("currentResult set to " + currentResult);
+                // System.out.println("START '" + c + "' at " + i);
             }
 
             String s = "";
@@ -102,25 +99,19 @@ public class TrashCompactor extends Puzzle {
             s = s.trim();
 
             if (!s.isEmpty()) {
-                // System.out.println("columnValue: " + s + " at " + i);
-                long columsValue = Long.parseLong(s);
-                // System.out.println("columnValue: " + columsValue + " at " + i);
-                // System.out.println("currentOperator: " + currentOperator);
-                // System.out.println("currentResult: " + currentResult);
-                if (currentOperator == '+') {
 
+                long columsValue = Long.parseLong(s);
+
+                if (currentOperator == '+') {
                     currentResult += columsValue;
                 } else if (currentOperator == '*') {
-
                     currentResult *= columsValue;
                 }
             }
-            // System.out.println("currentResult: " + currentResult);
 
-            if (i == opreatorLine.length() - 1) {
+
+            if (i == operatorLine.length() - 1) {
                 finalResult += currentResult;
-                System.out.println("- currentResult: " + currentResult);
-                System.out.println("- finalResult set to " + finalResult);
             }
         }
         return finalResult;
