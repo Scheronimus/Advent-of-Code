@@ -9,8 +9,7 @@ public abstract class CharGrid {
     protected final List<String> rows;
 
     /**
-     * Construct a CharGrid from an existing list of strings.
-     * A defensive copy is made.
+     * Construct a CharGrid from an existing list of strings. A defensive copy is made.
      */
     protected CharGrid(List<String> rows) {
         this.rows = new ArrayList<>(rows);
@@ -44,8 +43,7 @@ public abstract class CharGrid {
     }
 
     /**
-     * Mutate a character at (x,y).
-     * Since String is immutable, this rebuilds the modified row.
+     * Mutate a character at (x,y). Since String is immutable, this rebuilds the modified row.
      */
     public void set(int x, int y, char c) {
         StringBuilder sb = new StringBuilder(rows.get(y));
@@ -64,14 +62,13 @@ public abstract class CharGrid {
     }
 
     /**
-     * Returns all 8 neighbors of (x, y),
-     * checking boundaries automatically.
+     * Returns all 8 neighbors of (x, y), checking boundaries automatically.
      */
     public List<Character> neighbors8(int x, int y) {
         List<Character> result = new ArrayList<>();
 
-        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
-        int[] dy = {-1,  0,  1, -1, 1, -1, 0, 1};
+        int[] dx = { -1, -1, -1, 0, 0, 1, 1, 1 };
+        int[] dy = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
         for (int i = 0; i < 8; i++) {
             int nx = x + dx[i];
@@ -88,8 +85,8 @@ public abstract class CharGrid {
     public List<Character> neighbors4(int x, int y) {
         List<Character> result = new ArrayList<>();
 
-        int[] dx = {0, -1, 1, 0};
-        int[] dy = {-1, 0, 0, 1};
+        int[] dx = { 0, -1, 1, 0 };
+        int[] dy = { -1, 0, 0, 1 };
 
         for (int i = 0; i < 4; i++) {
             int nx = x + dx[i];
@@ -100,6 +97,17 @@ public abstract class CharGrid {
         }
 
         return result;
+    }
+
+    public Point find(char c) {
+        for (int y = 0; y < height(); y++) {
+            for (int x = 0; x < width(); x++) {
+                if (get(x, y) == c) {
+                    return new Point(x, y);
+                }
+            }
+        }
+        return null;
     }
 
     /** Prints the grid. Very handy for debugging AoC tasks. */
