@@ -31,63 +31,93 @@ public class Playground extends Puzzle {
 
         }
 
-        System.out.println(points);
+        // System.out.println(points);
 
     }
 
 
     @Override
     public Object getAnswer1() {
+        Map<Point3D, Integer> groups = initateGroup();
+
+        // System.out.println(groups);
+
+        List<DistancePair> res = Geometry.findKShorterDistancePairs(points, connection);
+        // System.out.println(res);
+        // System.out.println(res.size());
+
+        for (DistancePair connection : res) {
+            updateGroups(groups, connection);
+        }
+
+        List<Integer> values = countByGroup(groups);
+        return values.get(0) * values.get(1) * values.get(2);
+    }
+
+    private Map<Point3D, Integer> initateGroup() {
         Map<Point3D, Integer> groups = new HashMap<>();
         int index = 0;
         for (Point3D point : points) {
             groups.put(point, index);
             index++;
         }
+        return groups;
+    }
 
-        System.out.println(groups);
+    private void updateGroups(final Map<Point3D, Integer> groups, final DistancePair connection) {
+        Integer group1 = groups.get(connection.point1);
+        Integer group2 = groups.get(connection.point2);
 
-        List<DistancePair> res = Geometry.findKShorterDistancePairs(points, connection);
-        System.out.println(res);
-        System.out.println(res.size());
+        if (group1 != group2) {
 
-        for (DistancePair connection : res) {
-            Integer group1 = groups.get(connection.point1);
-            Integer group2 = groups.get(connection.point2);
+            int oldValueToFind = group2;
+            int newValueToSet = group1;
 
-            if (group1 != group2) {
-
-                int oldValueToFind = group2;
-                int newValueToSet = group1;
-
-                // Iterate through the entries and update
-                for (Map.Entry<Point3D, Integer> entry : groups.entrySet()) {
-                    if (entry.getValue().equals(oldValueToFind)) {
-                        entry.setValue(newValueToSet); // Safely updates the value associated with this key
-                    }
+            // Iterate through the entries and update
+            for (Map.Entry<Point3D, Integer> entry : groups.entrySet()) {
+                if (entry.getValue().equals(oldValueToFind)) {
+                    entry.setValue(newValueToSet); // Safely updates the value associated with this key
                 }
             }
         }
+    }
 
-        System.out.println(groups);
+    private List<Integer> countByGroup(final Map<Point3D, Integer> groups) {
+        // System.out.println(groups);
 
         Map<Integer, Integer> countsMap = new HashMap<>();
         for (Integer value : groups.values()) {
             countsMap.put(value, countsMap.getOrDefault(value, 0) + 1);
         }
 
-        System.out.println(countsMap);
+        // System.out.println(countsMap);
         List<Integer> values = new ArrayList<>(countsMap.values());
-        System.out.println(values);
+        // System.out.println(values);
         Collections.sort(values, Collections.reverseOrder());
-        System.out.println(values);
-        return values.get(0) * values.get(1) * values.get(2);
+        // System.out.println(values);
+        return values;
     }
 
     @Override
     public Object getAnswer2() {
-        // TODO
-        return null;
+        long solution = 0;
+        Map<Point3D, Integer> groups = initateGroup();
+
+        // System.out.println(groups);
+
+        List<DistancePair> res = Geometry.findShorterDistancePairs(points);
+
+
+        for (DistancePair connection : res) {
+            updateGroups(groups, connection);
+            if (countByGroup(groups).get(0) == points.size()) {
+                solution = (long)connection.point1.getX() * (long)connection.point2.getX();
+                break;
+            }
+        }
+
+
+        return solution;
     }
 
     public static void main(final String[] args) throws IOException {

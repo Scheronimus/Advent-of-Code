@@ -18,11 +18,7 @@ public class Geometry {
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public static List<DistancePair> findKShorterDistancePairs(final List<Point3D> points, final int k) {
-        if (points == null || points.size() < 2 || k <= 0) {
-            System.out.println("Invalid input: List is null, contains less than 2 points, or k is not positive.");
-            return new ArrayList<>();
-        }
+    public static List<DistancePair> findShorterDistancePairs(final List<Point3D> points) {
 
         List<DistancePair> allPairsWithDistances = new ArrayList<>();
 
@@ -41,6 +37,12 @@ public class Geometry {
         Collections.sort(allPairsWithDistances);
 
         // Return the first K pairs, or fewer if there aren't K total pairs
+        return allPairsWithDistances;
+    }
+
+    public static List<DistancePair> findKShorterDistancePairs(final List<Point3D> points, final int k) {
+
+        List<DistancePair> allPairsWithDistances = findShorterDistancePairs(points);
         return allPairsWithDistances.subList(0, Math.min(k, allPairsWithDistances.size()));
     }
 }
