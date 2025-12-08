@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import helper.DistancePair;
 import helper.Geometry;
 import helper.Point3D;
 import helper.Puzzle;
@@ -35,24 +34,6 @@ public class Playground extends Puzzle {
 
     }
 
-
-    @Override
-    public Object getAnswer1() {
-        Map<Point3D, Integer> groups = initateGroup();
-
-        // System.out.println(groups);
-
-        List<DistancePair> res = Geometry.findKShorterDistancePairs(points, connection);
-        // System.out.println(res);
-        // System.out.println(res.size());
-
-        for (DistancePair connection : res) {
-            updateGroups(groups, connection);
-        }
-
-        List<Integer> values = countByGroup(groups);
-        return values.get(0) * values.get(1) * values.get(2);
-    }
 
     private Map<Point3D, Integer> initateGroup() {
         Map<Point3D, Integer> groups = new HashMap<>();
@@ -83,39 +64,70 @@ public class Playground extends Puzzle {
     }
 
     private List<Integer> countByGroup(final Map<Point3D, Integer> groups) {
-        // System.out.println(groups);
+
 
         Map<Integer, Integer> countsMap = new HashMap<>();
         for (Integer value : groups.values()) {
             countsMap.put(value, countsMap.getOrDefault(value, 0) + 1);
         }
 
-        // System.out.println(countsMap);
         List<Integer> values = new ArrayList<>(countsMap.values());
-        // System.out.println(values);
         Collections.sort(values, Collections.reverseOrder());
-        // System.out.println(values);
+
         return values;
+    }
+
+    public static List<DistancePair> findShorterDistancePairs(final List<Point3D> points) {
+
+        List<DistancePair> allPairsWithDistances = new ArrayList<>();
+
+        // Generate all unique pairs and their distances
+        for (int i = 0; i < points.size(); i++) {
+            Point3D p1 = points.get(i);
+            for (int j = i + 1; j < points.size(); j++) {
+                Point3D p2 = points.get(j);
+                double distance = Geometry.euclidianDistance(p1, p2);
+                allPairsWithDistances.add(new DistancePair(p1, p2, distance));
+            }
+        }
+
+        // Sort all pairs by distance
+        Collections.sort(allPairsWithDistances);
+        return allPairsWithDistances;
+    }
+
+    public static List<DistancePair> findKShorterDistancePairs(final List<Point3D> points, final int k) {
+
+        List<DistancePair> allPairsWithDistances = findShorterDistancePairs(points);
+        return allPairsWithDistances.subList(0, Math.min(k, allPairsWithDistances.size()));
+    }
+
+    @Override
+    public Object getAnswer1() {
+        Map<Point3D, Integer> groups = initateGroup();
+        List<DistancePair> res = findKShorterDistancePairs(points, connection);
+
+        for (DistancePair pair : res) {
+            updateGroups(groups, pair);
+        }
+
+        List<Integer> values = countByGroup(groups);
+        return values.get(0) * values.get(1) * values.get(2);
     }
 
     @Override
     public Object getAnswer2() {
         long solution = 0;
         Map<Point3D, Integer> groups = initateGroup();
+        List<DistancePair> res = findShorterDistancePairs(points);
 
-        // System.out.println(groups);
-
-        List<DistancePair> res = Geometry.findShorterDistancePairs(points);
-
-
-        for (DistancePair connection : res) {
-            updateGroups(groups, connection);
+        for (DistancePair pair : res) {
+            updateGroups(groups, pair);
             if (countByGroup(groups).get(0) == points.size()) {
-                solution = (long)connection.point1.getX() * (long)connection.point2.getX();
+                solution = (long)pair.point1.getX() * (long)pair.point2.getX();
                 break;
             }
         }
-
 
         return solution;
     }
