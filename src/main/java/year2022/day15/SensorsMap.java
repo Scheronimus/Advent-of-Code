@@ -1,10 +1,10 @@
 package year2022.day15;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import helper.Geometry;
+import helper.Point;
 
 public class SensorsMap {
     List<Sensor> sensors = new ArrayList<>();
@@ -13,7 +13,7 @@ public class SensorsMap {
 
     int xMax, xMin, yMax, yMin;
 
-    public SensorsMap(List<Sensor> sensors, List<Point> sensorList, List<Point> beaconList) {
+    public SensorsMap(final List<Sensor> sensors, final List<Point> sensorList, final List<Point> beaconList) {
         super();
         this.sensors = sensors;
         this.sensorList = sensorList;
@@ -23,17 +23,17 @@ public class SensorsMap {
 
     }
 
-    private void setMinMax(List<Sensor> sensors) {
+    private void setMinMax(final List<Sensor> sensors) {
         Integer xMax = null;
         Integer xMin = null;
         Integer yMax = null;
         Integer yMin = null;
 
         for (Sensor sensor : sensors) {
-            int xMaxSensor = sensor.sensor.x + sensor.covering;
-            int xMinSensor = sensor.sensor.x - sensor.covering;
-            int yMaxSensor = sensor.sensor.y + sensor.covering;
-            int yMinSensor = sensor.sensor.x - sensor.covering;
+            int xMaxSensor = sensor.sensor.x() + sensor.covering;
+            int xMinSensor = sensor.sensor.x() - sensor.covering;
+            int yMaxSensor = sensor.sensor.y() + sensor.covering;
+            int yMinSensor = sensor.sensor.x() - sensor.covering;
 
             if (xMax == null || xMaxSensor > xMax) {
                 xMax = xMaxSensor;
@@ -56,7 +56,7 @@ public class SensorsMap {
     }
 
 
-    public String visualized(int min, int max) {
+    public String visualized(final int min, final int max) {
         return visualized(min, max, min, max);
     }
 
@@ -64,7 +64,7 @@ public class SensorsMap {
         return visualized(xMin, xMax, yMin, yMax);
     }
 
-    private String visualized(int xMin, int xMax, int yMin, int yMax) {
+    private String visualized(final int xMin, final int xMax, final int yMin, final int yMax) {
         StringBuilder sb = new StringBuilder();
         for (int y = yMin; y <= yMax; y++) {
             for (int x = xMin; x <= xMax; x++) {
@@ -85,7 +85,7 @@ public class SensorsMap {
     }
 
 
-    public Point findBlindSpotBetween(int min, int max) {
+    public Point findBlindSpotBetween(final int min, final int max) {
         for (int y = min; y <= max; y++) {
             for (int x = min; x <= max; x++) {
                 Point p = new Point(x, y);
@@ -94,16 +94,17 @@ public class SensorsMap {
                 if (!sensorList.contains(p) && !beaconList.contains(p)) {
                     if (sensor == null) {
                         return p;
-                    } else
+                    } else {
                         // skip all x until right border of the sensor
                         x = sensor.xMaxRangeIn(y);
+                    }
                 }
             }
         }
         return null;
     }
 
-    public int getCoveredSpotInY(int y) {
+    public int getCoveredSpotInY(final int y) {
         int result = 0;
         for (int x = xMin; x < xMax; x++) {
             Point p = new Point(x, y);

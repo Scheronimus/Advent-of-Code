@@ -1,6 +1,5 @@
 package year2022.day15;
 
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import helper.Point;
 import helper.Puzzle;
 
 public class BeaconExclusionZone extends Puzzle {
@@ -53,7 +53,7 @@ public class BeaconExclusionZone extends Puzzle {
         throw new RuntimeException("Use other function!!");
     }
 
-    public Object getAnswer1(int y) {
+    public Object getAnswer1(final int y) {
 
         // System.out.println(sensorsMap.visualized(0, 20));
         return sensorsMap.getCoveredSpotInY(y);
@@ -64,9 +64,9 @@ public class BeaconExclusionZone extends Puzzle {
         throw new RuntimeException("Use other function!!");
     }
 
-    public Object getAnswer2(int min, int max) {
+    public Object getAnswer2(final int min, final int max) {
         Point p = sensorsMap.findBlindSpotBetween(min, max);
-        return p.x * 4000000L + p.y;
+        return p.x() * 4000000L + p.y();
     }
 
     public static void main(final String[] args) throws IOException {

@@ -1,8 +1,7 @@
 package year2022.day15;
 
-import java.awt.Point;
-
 import helper.Geometry;
+import helper.Point;
 
 public class Sensor {
     Point sensor;
@@ -16,8 +15,8 @@ public class Sensor {
         this.covering = Geometry.manhattanDistance(sensor, closestBeacon);
     }
 
-    public int xMaxRangeIn(int y) {
-        return covering - Math.abs(sensor.y - y) + sensor.x;
+    public int xMaxRangeIn(final int y) {
+        return covering - Math.abs(sensor.y() - y) + sensor.x();
     }
 
 
