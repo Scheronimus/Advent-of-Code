@@ -53,10 +53,24 @@ public class MovieTheater extends Puzzle {
         return allPairsWithArea.get(0).area;
     }
 
+
     @Override
     public Object getAnswer2() {
-        // TODO
-        return null;
+        long solution = 0;
+        List<Point> polygone = new ArrayList<Point>(points);
+        // PolygonePrinter.visualizePolygonScaled(polygone);
+
+        List<AreaPair> allPairsWithArea = findHigherAreaPairs(points);
+
+        for (AreaPair pair : allPairsWithArea) {
+            if (PolygoneUtils.isRectangleInsidePolygon(pair.point1, pair.point2, polygone)) {
+                solution = pair.area;
+                break;
+            }
+
+        }
+
+        return solution;
     }
 
     public static void main(final String[] args) throws IOException {
