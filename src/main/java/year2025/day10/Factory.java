@@ -3,6 +3,7 @@ package year2025.day10;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import helper.Puzzle;
 import year2025.day10.part1.ButtonResolver;
@@ -307,17 +308,37 @@ public class Factory extends Puzzle {
 
         long solution = 0;
         // ButtonResolver resolver = new ButtonResolver();
-        ButtonPressSolverBFS solverDFS = new ButtonPressSolverBFS();
+        // ButtonPressSolverBFS solverDFS = new ButtonPressSolverBFS();
         for (Machine machine : machines) {
-            System.out.println("Machine: " + machine);
+            // System.out.println("Machine: " + machine);
 
+            List<List<Integer>> vectors = machine.getButtonsVectors();
+            List<Integer> result = machine.getJoltageVector();
 
-            // searchMin(machine, machine.getJoltageVector(), 0, 0);
+            System.out.println("Input Vectors: " + vectors);
+            System.out.println("Target Result: " + result);
+            try {
+                MinimalVectorSum solver = new MinimalVectorSum(vectors, result);
+                Map<Integer, Integer> sol = solver.findMinimalSet();
 
-            int minPresses = solverDFS.findMinButtonPressesBFS(machine, machine.getJoltageVector());
+                int totalCount = sol.values().stream().mapToInt(Integer::intValue).sum();
+                solution += totalCount;
 
-            solution += minPresses;
+                if (sol.isEmpty() && !result.stream().allMatch(i -> i == 0)) {
+                    System.out.println("No combination of vectors (with multiple uses) can form the result vector.");
+                } else if (sol.isEmpty() && result.stream().allMatch(i -> i == 0)) {
+                    System.out.println("Result vector is all zeros. No vectors are needed. Total count: 0");
+                } else {
+                    System.out.println("Minimal vector counts (x_i): " + sol);
+                    System.out.println("Total minimal count: " + totalCount);
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            System.out.println();
         }
+
+        // solution += minPresses;
 
 
         return solution;
