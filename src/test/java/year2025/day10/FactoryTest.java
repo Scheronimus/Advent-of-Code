@@ -6,6 +6,6 @@ import testhelper.PuzzleUnitTest;
 
 public class FactoryTest extends PuzzleUnitTest {
     public FactoryTest() throws IOException {
-        super(new Factory("year2025/day10/inputTest"), 7L, null);
+        super(new Factory("year2025/day10/inputTest"), 7L, 33L);
     }
 }

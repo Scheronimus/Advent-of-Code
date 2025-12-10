@@ -54,7 +54,7 @@ class MachineTest {
         void shouldStoreJoltage() {
             String joltage = "{10,11,5}";
             Machine machine = createMachine("[.###.#]", Collections.emptyList(), joltage);
-            assertEquals(joltage, machine.getJoltage());
+            assertEquals(joltage, machine.getJoltageRaw());
         }
 
         @Test
@@ -398,7 +398,7 @@ class MachineTest {
 
             assertEquals(lightsRaw, machine.getLightsExpectationRaw());
             assertEquals(buttonsRaw, machine.getButtonsRaw());
-            assertEquals(joltage, machine.getJoltage());
+            assertEquals(joltage, machine.getJoltageRaw());
 
             // Lights expectation mask (MSB-first mapping)
             // .###.# (length 6)

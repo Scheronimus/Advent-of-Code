@@ -1,4 +1,4 @@
-package year2025.day10;
+package year2025.day10.part1;
 
 import java.util.HashMap;
 import java.util.LinkedList;
