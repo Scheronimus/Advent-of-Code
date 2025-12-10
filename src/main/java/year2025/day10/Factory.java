@@ -1,6 +1,7 @@
 package year2025.day10;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -305,44 +306,30 @@ public class Factory extends Puzzle {
     @Override
     public Object getAnswer2() {
 
-
         long solution = 0;
-        // ButtonResolver resolver = new ButtonResolver();
-        // ButtonPressSolverBFS solverDFS = new ButtonPressSolverBFS();
+
         for (Machine machine : machines) {
-            // System.out.println("Machine: " + machine);
 
-            List<List<Integer>> vectors = machine.getButtonsVectors();
-            List<Integer> result = machine.getJoltageVector();
 
-            System.out.println("Input Vectors: " + vectors);
-            System.out.println("Target Result: " + result);
-            try {
-                MinimalVectorSum solver = new MinimalVectorSum(vectors, result);
-                Map<Integer, Integer> sol = solver.findMinimalSet();
+            List<List<Integer>> vectors = machine.getButtonsVectors(); // buttons -> counters
+            List<Integer> result = machine.getJoltageVector();         // target counters
+            System.out.println("vectors: " + vectors);
+            System.out.println("result: " + result);
 
-                int totalCount = sol.values().stream().mapToInt(Integer::intValue).sum();
-                solution += totalCount;
-
-                if (sol.isEmpty() && !result.stream().allMatch(i -> i == 0)) {
-                    System.out.println("No combination of vectors (with multiple uses) can form the result vector.");
-                } else if (sol.isEmpty() && result.stream().allMatch(i -> i == 0)) {
-                    System.out.println("Result vector is all zeros. No vectors are needed. Total count: 0");
-                } else {
-                    System.out.println("Minimal vector counts (x_i): " + sol);
-                    System.out.println("Total minimal count: " + totalCount);
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println("Error: " + e.getMessage());
+            Map<Integer, BigInteger> sol = IntegerLinearSolverSafe.solve(vectors, result);
+            BigInteger totalPressesBig = BigInteger.ZERO;
+            for (BigInteger count : sol.values()) {
+                totalPressesBig = totalPressesBig.add(count);
             }
-            System.out.println();
+
+            // If you are confident it fits in int:
+            // int totalPresses = totalPressesBig.intValueExact(); // throws if too big
+
+            // Or add safely to a long solution:
+            solution += totalPressesBig.longValue();
         }
 
-        // solution += minPresses;
-
-
         return solution;
-
     }
 
     public static void main(final String[] args) throws IOException {

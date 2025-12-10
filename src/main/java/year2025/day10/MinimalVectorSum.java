@@ -2,12 +2,11 @@ package year2025.day10;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects; // For comparing List<Integer>
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 public class MinimalVectorSum {
 
@@ -80,96 +79,215 @@ public class MinimalVectorSum {
         this.resultVector = inputResult;
     }
 
-    /**
-     * Finds the minimal count of vectors (allowing multiple uses of the same vector) that sum to the result vector.
-     * Uses a BFS approach.
-     *
-     * @return A Map where keys are vector indices (0 to n-1) and values are the number of times that vector should be
-     *         used. Returns an empty map if no solution is found or if the result vector is all zeros.
-     */
     public Map<Integer, Integer> findMinimalSet() {
-        // Handle trivial case 1: if result is all zeros, no vectors are needed.
+        // quick trivial checks
         if (resultVector.stream().allMatch(i -> i == 0)) {
             return new HashMap<>();
         }
-
-        // Handle trivial case 2: If there are no input vectors, and the result is not all zeros.
         if (n == 0) {
             return new HashMap<>();
         }
 
-        // Initialize start state: sum = [0,0,...,0], count = 0, no vectors used
-        List<Integer> initialSum = new ArrayList<>(s);
-        for (int i = 0; i < s; i++) {
-            initialSum.add(0);
+        // Convert vectors/result to primitive arrays for performance
+        int s = this.s;
+        int n = this.n;
+        int[][] vec = new int[n][s];
+        for (int i = 0; i < n; i++) {
+            List<Integer> v = vectors.get(i);
+            for (int j = 0; j < s; j++)
+                vec[i][j] = v.get(j);
+        }
+        int[] target = new int[s];
+        for (int j = 0; j < s; j++)
+            target[j] = resultVector.get(j);
+
+        // Early impossibility check: any position j with target[j] > 0 but all vectors have 0 there
+        for (int j = 0; j < s; j++) {
+            boolean any = false;
+            for (int i = 0; i < n; i++)
+                if (vec[i][j] != 0) {
+                    any = true;
+                    break;
+                }
+            if (!any && target[j] > 0) {
+                return new HashMap<>(); // impossible
+            }
         }
 
-        // Queue for BFS
-        Queue<State> queue = new LinkedList<>();
-        // Map to store the minimum count to reach a particular sum vector
-        Map<List<Integer>, Map<Integer, Integer>> visited = new HashMap<>(); // Stores the xCounts for min count
+        // SPECIAL-CASE: if there are exactly 2 vectors, try algebraic 2x2 solves
+        if (n == 2) {
+            Map<Integer, Integer> twoSol = trySolveTwoVectors(vec[0], vec[1], target);
+            if (!twoSol.isEmpty())
+                return twoSol;
+            // continue to general solver if algebraic approach didn't produce a valid non-negative integer solution
+        }
 
-        // Initial state
-        State initialState = new State(initialSum, 0, new HashMap<>());
-        queue.offer(initialState);
-        visited.put(initialSum, initialState.xCounts);
+        // Precompute usefulness info for heuristic: max ones per vector (used for admissible heuristic)
+        int maxOnesInVector = 1;
+        for (int i = 0; i < n; i++) {
+            int ones = 0;
+            for (int j = 0; j < s; j++)
+                ones += vec[i][j];
+            maxOnesInVector = Math.max(maxOnesInVector, Math.max(1, ones));
+        }
 
-        Map<Integer, Integer> bestSolution = null;
-        int minCount = Integer.MAX_VALUE;
+        // Priority queue node: (estimate = g + h, g=count so far, sum[], counts[])
+        class Node {
+            int g;
+            int est; // g + heuristic
+            int[] sum;   // current sum
+            int[] counts; // counts per vector
 
-        while (!queue.isEmpty()) {
-            State current = queue.poll();
+            Node(int g, int est, int[] sum, int[] counts) {
+                this.g = g;
+                this.est = est;
+                this.sum = sum;
+                this.counts = counts;
+            }
+        }
 
-            // If we've already found a shorter path to the target, and this path is longer, skip.
-            // This is primarily for the general BFS, not strictly needed for min-count if we visit states in order.
-            if (current.count >= minCount) {
+        Comparator<Node> cmp = Comparator.comparingInt(a -> a.est);
+        PriorityQueue<Node> pq = new PriorityQueue<>(cmp);
+
+        int[] zeroSum = new int[s];
+        int[] zeroCounts = new int[n];
+        int zeroH = heuristicRemaining(target, zeroSum, maxOnesInVector);
+        pq.offer(new Node(0, zeroH, zeroSum, zeroCounts));
+
+        // visited: map canonical sum key -> minimal g (count) found so far
+        Map<String, Integer> bestG = new HashMap<>();
+        // store bestCounts for target when found
+        int[] bestCountsForTarget = null;
+        int bestTotalCount = Integer.MAX_VALUE;
+
+        while (!pq.isEmpty()) {
+            Node cur = pq.poll();
+            String key = Arrays.toString(cur.sum);
+
+            // If we've already seen a better g for this sum, skip
+            Integer known = bestG.get(key);
+            if (known != null && known <= cur.g)
+                continue;
+            bestG.put(key, cur.g);
+
+            // If cur.g already >= bestTotalCount, skip
+            if (cur.g >= bestTotalCount)
+                continue;
+
+            // Check goal
+            if (Arrays.equals(cur.sum, target)) {
+                bestCountsForTarget = cur.counts;
+                bestTotalCount = cur.g;
+                // We can continue to search for strictly smaller solution but heuristic + PQ usually finds minimal
+                // quickly.
                 continue;
             }
 
-            // Check if current sum equals the target result
-            if (Objects.equals(current.currentSum, resultVector)) {
-                if (current.count < minCount) {
-                    minCount = current.count;
-                    bestSolution = current.xCounts; // Store the xCounts for this minimal solution
-                }
-                continue; // No need to extend this path further if it's already a solution
-            }
-
-            // Explore neighbors by adding each vector V_i
+            // Expand neighbors: try adding each vector
             for (int i = 0; i < n; i++) {
-                List<Integer> vectorToAdd = vectors.get(i);
-                List<Integer> nextSum = addVectors(current.currentSum, vectorToAdd);
-
-                // Pruning: If any component in nextSum exceeds the corresponding component in resultVector, skip
-                boolean exceedsResult = false;
+                // Build next sum (inlined and check exceed)
+                int[] nextSum = new int[s];
+                boolean exceeds = false;
                 for (int j = 0; j < s; j++) {
-                    if (nextSum.get(j) > resultVector.get(j)) {
-                        exceedsResult = true;
+                    int nv = cur.sum[j] + vec[i][j];
+                    if (nv > target[j]) {
+                        exceeds = true;
                         break;
                     }
+                    nextSum[j] = nv;
                 }
-                if (exceedsResult) {
-                    continue; // This path is invalid
-                }
+                if (exceeds)
+                    continue;
 
-                // If this is a valid sum and we haven't found a shorter path to it yet
-                Map<Integer, Integer> currentXCounts = current.xCounts;
-                int nextCount = current.count + 1;
+                int nextG = cur.g + 1;
+                // Prune if nextG >= known best for target or other bounds
+                if (nextG >= bestTotalCount)
+                    continue;
 
-                // Check if we've visited this 'nextSum' before with a better or equal count
-                if (!visited.containsKey(nextSum) || nextCount < calculateTotalCount(visited.get(nextSum))) {
+                // heuristic
+                int h = heuristicRemaining(target, nextSum, maxOnesInVector);
+                int est = nextG + h;
+                if (est >= bestTotalCount)
+                    continue; // even optimistic estimate no better than best found
 
-                    // Create new xCounts for the next state
-                    Map<Integer, Integer> nextXCounts = new HashMap<>(currentXCounts);
-                    nextXCounts.put(i, nextXCounts.getOrDefault(i, 0) + 1);
+                // key check: if we've seen better g to reach nextSum, skip
+                String nextKey = Arrays.toString(nextSum);
+                Integer knownNextG = bestG.get(nextKey);
+                if (knownNextG != null && knownNextG <= nextG)
+                    continue;
 
-                    visited.put(nextSum, nextXCounts); // Update the visited map
-                    queue.offer(new State(nextSum, nextCount, nextXCounts));
-                }
+                // build next counts (copy and increment)
+                int[] nextCounts = Arrays.copyOf(cur.counts, n);
+                nextCounts[i]++;
+
+                pq.offer(new Node(nextG, est, nextSum, nextCounts));
             }
         }
 
-        return bestSolution == null ? new HashMap<>() : bestSolution;
+        if (bestCountsForTarget == null)
+            return new HashMap<>();
+
+        // convert counts array to map
+        Map<Integer, Integer> out = new HashMap<>();
+        for (int i = 0; i < n; i++)
+            if (bestCountsForTarget[i] > 0)
+                out.put(i, bestCountsForTarget[i]);
+        return out;
+    }
+
+    /** simple admissible heuristic: remaining total ones divided by max ones per vector (ceil) */
+    private int heuristicRemaining(final int[] target, final int[] sum, final int maxOnesPerVector) {
+        int rem = 0;
+        for (int j = 0; j < target.length; j++)
+            rem += (target[j] - sum[j]);
+        // each vector adds at most maxOnesPerVector ones total, so need at least ceil(rem / maxOnesPerVector) more
+        // vectors
+        return (rem + maxOnesPerVector - 1) / maxOnesPerVector;
+    }
+
+    /**
+     * Attempt to solve when there are exactly two vectors. Returns empty map if no valid non-negative integer solution
+     * found. We search for two indices a,b (components) where the 2x2 determinant is non-zero, solve using Cramer's
+     * rule, and validate.
+     */
+    private Map<Integer, Integer> trySolveTwoVectors(int[] v0, int[] v1, int[] target) {
+        int s = target.length;
+        // Find two rows (components) a,b where the 2x2 matrix [[v0[a], v1[a]], [v0[b], v1[b]]] has nonzero det
+        for (int a = 0; a < s; a++) {
+            for (int b = a + 1; b < s; b++) {
+                int A = v0[a], B = v1[a], C = v0[b], D = v1[b];
+                int det = A * D - B * C;
+                if (det == 0)
+                    continue;
+                long tx = target[a], ty = target[b];
+                long xNum = tx * D - B * ty;
+                long yNum = A * ty - tx * C;
+                if (xNum % det != 0 || yNum % det != 0)
+                    continue; // need integer solutions
+                long x = xNum / det;
+                long y = yNum / det;
+                if (x < 0 || y < 0)
+                    continue;
+                // validate across all components
+                boolean ok = true;
+                for (int j = 0; j < s; j++) {
+                    long check = x * v0[j] + y * v1[j];
+                    if (check != target[j]) {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (ok) {
+                    Map<Integer, Integer> sol = new HashMap<>();
+                    if (x > 0)
+                        sol.put(0, (int)x);
+                    if (y > 0)
+                        sol.put(1, (int)y);
+                    return sol;
+                }
+            }
+        }
+        return new HashMap<>();
     }
 
     /**
