@@ -303,16 +303,18 @@ public class Factory extends Puzzle {
 
     @Override
     public Object getAnswer2() {
+
+
         long solution = 0;
         // ButtonResolver resolver = new ButtonResolver();
-
+        ButtonPressSolverBFS solverDFS = new ButtonPressSolverBFS();
         for (Machine machine : machines) {
             System.out.println("Machine: " + machine);
 
-            searchMin(machine, machine.getJoltageVector(), 0, 0);
-            int minPresses = globalMin;
-            // System.out.println("MinPress: " + minPresses);
-            globalMin = Integer.MAX_VALUE;
+
+            // searchMin(machine, machine.getJoltageVector(), 0, 0);
+
+            int minPresses = solverDFS.findMinButtonPressesBFS(machine, machine.getJoltageVector());
 
             solution += minPresses;
         }

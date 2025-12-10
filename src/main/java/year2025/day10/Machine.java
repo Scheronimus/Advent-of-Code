@@ -38,6 +38,11 @@ public class Machine {
         this.joltageVector = convertJoltageToVector(joltageRaw, expectedSize);
         this.buttonsVectors = buttonsRaw.stream().map(buttonRaw -> convertButtonToVector(buttonRaw, expectedSize))
                 .collect(Collectors.toList());
+        this.buttonsVectors = buttonsVectors.stream().sorted((b1, b2) -> {
+            int sum1 = b1.stream().mapToInt(Integer::intValue).sum();
+            int sum2 = b2.stream().mapToInt(Integer::intValue).sum();
+            return Integer.compare(sum2, sum1); // Descending sum
+        }).collect(Collectors.toCollection(ArrayList::new));
     }
 
     // --- Existing Conversion Methods (renamed for clarity) ---
